@@ -13,9 +13,27 @@ export async function GET(request: Request) {
     const { pathname } = new URL(request.url);
     const params = pathname.split("/v1/")[1];
     if (params === "all") {
-      return NextResponse.json({ status: 200, data: getAllFoods });
+      const data = await prisma.category.findMany({});
+      return NextResponse.json({ status: 200, data });
     }
-    const data = getAllFoods.filter((food) => food.category === params);
+    const data = await prisma.category.findMany({
+      where: { slug: params },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        items: {
+          select: {
+            id: true,
+            name: true,
+            images: true,
+            inStock: true,
+            originalPrice: true,
+            salePrice: true,
+          },
+        },
+      },
+    });
     if (data.length === 0) {
       return NextResponse.json({ status: 200, message: "Invalid category" });
     }
