@@ -6,7 +6,8 @@ import { NextResponse } from "next/server";
 export async function GET(request: Request) {
   try {
     const token = request.headers.get("Authorization");
-    if (!token || !verifyPublicToken(token)) {
+    const newToken = token?.replace("bearer ", "");
+    if (!newToken || !verifyPublicToken(newToken)) {
       return NextResponse.json({ status: 401, message: "Invalid Request" });
     }
     const { pathname } = new URL(request.url);
