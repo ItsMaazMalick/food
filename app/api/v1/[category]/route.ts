@@ -13,7 +13,23 @@ export async function GET(request: Request) {
     const { pathname } = new URL(request.url);
     const params = pathname.split("/v1/")[1];
     if (params === "all") {
-      const data = await prisma.category.findMany({});
+      const data = await prisma.category.findMany({
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          items: {
+            select: {
+              id: true,
+              name: true,
+              images: true,
+              inStock: true,
+              originalPrice: true,
+              salePrice: true,
+            },
+          },
+        },
+      });
       return NextResponse.json({ status: 200, data });
     }
     const data = await prisma.category.findMany({
