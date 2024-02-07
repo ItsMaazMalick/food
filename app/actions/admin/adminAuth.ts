@@ -47,6 +47,22 @@ export async function adminLogin(formData: FormData) {
       message: "Invalid credentials",
     };
   }
+  if (admin.isAdmin === "REJECTED") {
+    return {
+      status: 401,
+      success: false,
+      // errors: {},
+      message: "Your request was rejected",
+    };
+  }
+  if (admin.isAdmin === "PENDING") {
+    return {
+      status: 401,
+      success: false,
+      // errors: {},
+      message: "Your request is pending",
+    };
+  }
   //TOKEN DATA
   const tokenData = {
     id: admin.id,
