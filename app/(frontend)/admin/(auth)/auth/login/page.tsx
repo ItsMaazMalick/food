@@ -14,7 +14,7 @@ export default function AdminLoginPage() {
         <CardContent>
           <AdminLoginForm />
           <div className="mt-4 text-center text-sm">
-            Don't have an account?
+            Don&apos;t have an account?
             <Link
               className="underline text-blue-600 ml-1 font-bold"
               href="/admin/auth/register"

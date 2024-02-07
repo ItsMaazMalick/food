@@ -23,7 +23,7 @@ export default function Sidebar() {
       <div className="w-full py-4 px-2 flex gap-2 justify-center items-center">
         <Image src={"/images/logo.jpeg"} alt="LOGO" width={30} height={30} />
         <h1 className="uppercase font-bold">
-          <span className="text-primary">Gyro's n</span>
+          <span className="text-primary">Gyro&apos;s n</span>
           <span className="ml-1 text-secondary">more</span>
         </h1>
       </div>
