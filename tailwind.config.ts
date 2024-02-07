@@ -30,7 +30,7 @@ const config = {
         },
         secondary: {
           DEFAULT: "#5f403c",
-          foreground: "#53a42f",
+          foreground: "#FFFFFF",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
