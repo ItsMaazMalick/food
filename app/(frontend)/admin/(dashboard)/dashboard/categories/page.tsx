@@ -1,16 +1,22 @@
-import { Button } from "@/components/ui/button";
-import { Plus, PlusCircle } from "lucide-react";
+import { getDataByCategory } from "@/app/actions/categories/categories";
+import BackButton from "@/components/button/BackButton";
+import AddCategoryForm from "@/components/forms/AddCategoryForm";
+import TopContainer from "@/components/header/TopContainer";
+import AdminDataTable from "@/components/tables/AdminDataTable";
 
-export default function Categories() {
+export default async function Categories() {
+  const categories = await getDataByCategory("all");
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center h-12 shadow-md px-2 md:px-6 py-2 rounded-md bg-primary">
-        <div className="hidden sm:block">Categories</div>
-        <Button variant={"outline"}>
-          Add <PlusCircle className="ml-1" size={16} />
-        </Button>
-      </div>
+      <TopContainer title="Categories" link={<BackButton />} />
       {/* TABLE */}
+      <div className="mt-2">
+        <AddCategoryForm />
+      </div>
+      <div className="mt-4 bg-white">
+        <p className="p-2 text-xl font-bold text-primary">Categories</p>
+        <AdminDataTable index={1} data={categories} />
+      </div>
     </div>
   );
 }

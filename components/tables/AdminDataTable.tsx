@@ -105,7 +105,7 @@ export default function AdminDataTable({ data, index }: PageProps) {
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    // getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     state: {
@@ -132,7 +132,7 @@ export default function AdminDataTable({ data, index }: PageProps) {
               <ArrowUpDown size={15} className="ml-1" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="h-48 overflow-y-auto">
+          <DropdownMenuContent align="end" className="max-h-48 overflow-y-auto">
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
@@ -174,7 +174,7 @@ export default function AdminDataTable({ data, index }: PageProps) {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {data.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (

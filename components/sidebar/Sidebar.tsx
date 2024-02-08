@@ -2,21 +2,7 @@ import { getAdminSession } from "@/app/actions/adminSession";
 import Image from "next/image";
 import Link from "next/link";
 import AdminLogoutForm from "../forms/AdminLogoutForm";
-
-const links = [
-  {
-    title: "Dashboard",
-    href: "/admin/dashboard",
-  },
-  {
-    title: "Categories",
-    href: "/admin/dashboard/categories",
-  },
-  {
-    title: "Items",
-    href: "/admin/dashboard/items",
-  },
-];
+import SidebarLinks from "./SidebarLinks";
 
 export default async function Sidebar() {
   const { name } = await getAdminSession();
@@ -47,18 +33,10 @@ export default async function Sidebar() {
             <span className="text-xs text-green-600 font-bold">online</span>
           </div>
         </div>
-        <div className="w-full flex flex-col gap-4 p-2 h-full">
-          {links.map((link) => (
-            <Link
-              className="p-2 rounded-md text-secondary bg-primary bg-opacity-50 hover:bg-primary transition-all duration-300"
-              href={link.href}
-              key={link.title}
-            >
-              {link.title}
-            </Link>
-          ))}
+        <SidebarLinks />
+        <div className="p-2">
+          <AdminLogoutForm />
         </div>
-        <AdminLogoutForm />
       </div>
     </div>
   );

@@ -34,9 +34,11 @@ export const CategoriesHeader: ColumnDef<any>[] = [
     header: ({ column }) => <div className="text-end">Action</div>,
     cell: ({ row }) => (
       <div className="flex items-center gap-4 justify-end">
-        <form action="">
-          <FormSubmitButton size={"xs"} title="Edit" />
-        </form>
+        <Link
+          href={`/admin/dashboard/categories/edit-category/${row.original.id}`}
+        >
+          <Button size={"xs"}>Edit</Button>
+        </Link>
         <AlertComponent
           target="category"
           id={row.original.id}

@@ -9,10 +9,8 @@ export default function AdminLogoutForm() {
     redirect("/admin/auth/login");
   };
   return (
-    <div className="p-2 flex items-center gap-2">
-      <form action={handleLogout}>
-        <FormSubmitButton variant={"destructive"} title="Sign Out" />
-      </form>
-    </div>
+    <form action={handleLogout}>
+      <FormSubmitButton variant={"destructive"} title="Sign Out" />
+    </form>
   );
 }

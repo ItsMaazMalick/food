@@ -1,6 +1,7 @@
 import { getDataByCategory } from "@/app/actions/categories/categories";
 import { getAllItems } from "@/app/actions/items/items";
 import TopCard from "@/components/cards/TopCard";
+import TopContainer from "@/components/header/TopContainer";
 import AdminDataTable from "@/components/tables/AdminDataTable";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,22 +20,10 @@ export default async function AdminDashboard() {
   return (
     <div className="w-full">
       {/* TOP CONTAINER */}
-      <div className="flex justify-between items-center h-12 shadow-md px-2 md:px-6 py-2 rounded-md bg-primary">
-        <div className="hidden sm:block">Categories</div>
-        <div className="block sm:hidden">
-          <Menu />
-        </div>
-        <div className="flex gap-2 items-center">
-          <Input
-            className="w-[150px] sm:w-[200px]"
-            type="text"
-            placeholder="Search category"
-          />
-          <div className="bg-secondary text-primary-foreground p-2 rounded-md cursor-pointer hover:scale-105 bg-opacity-70 hover:bg-opacity-100">
-            <Search />
-          </div>
-        </div>
-      </div>
+      <TopContainer
+        title="Dashboard"
+        link={<Salad size={35} className="p-1 bg-white rounded-md" />}
+      />
       {/* CARDS */}
       <div className="mt-4 w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <TopCard
