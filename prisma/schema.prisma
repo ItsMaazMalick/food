@@ -36,6 +36,7 @@ model Item {
   inStock       Int
   originalPrice Float
   salePrice     Float
+  featured      Boolean
   category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId    String      @db.ObjectId
   createdAt     DateTime    @default(now())
@@ -44,13 +45,15 @@ model Item {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  email     String   @unique
-  password  String
-  order     Order[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  email        String   @unique
+  password     String
+  referralCode String   @unique
+  points       Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  Order        Order[]
 }
 
 model Order {

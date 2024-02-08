@@ -116,7 +116,6 @@ export async function adminRegister(formData: FormData) {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
-
   await prisma.admin.create({
     data: {
       name,

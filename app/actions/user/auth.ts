@@ -8,6 +8,23 @@ import {
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+const referralCodeGenerator = (length: number) => {
+  const dataSet =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let code = "";
+  for (var i = 0, n = dataSet.length; i < length; ++i) {
+    code += dataSet.charAt(Math.floor(Math.random() * n));
+  }
+  return code;
+};
+
+type RegisterProps = {
+  name: string;
+  email: string;
+  password: string;
+  referralCode?: string;
+};
+
 // * OK:  FIXED:  -> LOGIN USER
 export async function loginUser({
   email,
@@ -67,8 +84,12 @@ export async function loginUser({
   return {
     status: 200,
     success: true,
+    name: user.name,
+    email: user.email,
+    referralCode: user.referralCode,
+    points: user.points,
     // errors: {},
-    user: token,
+    token,
   };
 }
 
@@ -77,11 +98,8 @@ export async function registerUser({
   name,
   email,
   password,
-}: {
-  name: string;
-  email: string;
-  password: string;
-}) {
+  referralCode,
+}: RegisterProps) {
   const validatedFields = userRegisterSchema.safeParse({
     name,
     email,
@@ -111,14 +129,30 @@ export async function registerUser({
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
-
-  await prisma.user.create({
+  const refCode = referralCodeGenerator(16);
+  const newUser = await prisma.user.create({
     data: {
       name,
       email,
       password: hashPassword,
+      referralCode: refCode,
     },
   });
+
+  if (referralCode) {
+    const oldUser = await prisma.user.findUnique({
+      where: { referralCode },
+    });
+    if (oldUser && oldUser.points <= 45) {
+      const referralUser = await prisma.user.update({
+        where: { referralCode: referralCode },
+        data: {
+          points: oldUser.points + 5,
+        },
+      });
+    }
+  }
+
   return {
     status: 201,
     success: true,

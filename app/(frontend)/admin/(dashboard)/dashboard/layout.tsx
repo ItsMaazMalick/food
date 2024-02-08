@@ -9,7 +9,7 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await getAdminSession();
-  if (!session?.success) {
+  if (!session) {
     redirect("/admin/auth/login");
   }
   return (

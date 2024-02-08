@@ -1,5 +1,6 @@
 "use server";
 import { getAdminSession } from "@/app/actions/adminSession";
+import { cookies } from "next/headers";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -9,7 +10,7 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   const session = await getAdminSession();
-  if (session?.success) {
+  if (session) {
     redirect("/admin/dashboard");
   }
   return (
