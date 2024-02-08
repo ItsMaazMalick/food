@@ -31,6 +31,7 @@ export default function AdminRegisterForm() {
     formData.append("password", values.password);
     formData.append("confirmPassword", values.confirmPassword);
     const result = await adminRegister(formData);
+    form.reset();
     if (result && !result.success) {
       setError(result.message);
     }

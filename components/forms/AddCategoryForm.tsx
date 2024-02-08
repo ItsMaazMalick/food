@@ -26,6 +26,7 @@ export default function AddCategoryForm() {
     formData.append("name", values.name);
     const result = await createCategory(formData);
     form.reset();
+    form.reset();
     if (result) {
       setError(result?.message);
     }

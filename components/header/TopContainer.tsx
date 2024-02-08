@@ -26,7 +26,7 @@ export default function TopContainer({
           </DropdownMenuItem>
         </DropdownComponent>
       </div>
-      <div className="flex gap-2 items-center">{link}</div>
+      <div>{link}</div>
     </div>
   );
 }

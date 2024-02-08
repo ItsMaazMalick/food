@@ -28,6 +28,7 @@ export default function AdminLoginForm() {
     formData.append("email", values.email);
     formData.append("password", values.password);
     const result = await adminLogin(formData);
+    form.reset();
     if (result && !result.success) {
       setError(result.message);
     }
