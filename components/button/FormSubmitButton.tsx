@@ -16,12 +16,14 @@ type PageProps = {
     | "link"
     | null
     | undefined;
+  size?: "default" | "xs" | "sm" | "lg" | "icon" | null | undefined;
 };
 
 export default function FormSubmitButton({
   title,
   loading,
   variant,
+  size,
 }: PageProps) {
   const { pending } = useFormStatus();
   return (
@@ -30,6 +32,7 @@ export default function FormSubmitButton({
       variant={variant ? variant : "default"}
       type="submit"
       aria-disabled={pending || loading}
+      size={size}
       disabled={pending || loading}
     >
       {(pending || loading) && (

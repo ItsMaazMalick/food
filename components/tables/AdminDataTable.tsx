@@ -40,8 +40,8 @@ import {
   Table17Header,
   Table18Header,
   Table19Header,
-  Table1Header,
-  Table2Header,
+  CategoriesHeader,
+  ItemsHeader,
   Table3Header,
   Table4Header,
   Table5Header,
@@ -66,9 +66,9 @@ export default function AdminDataTable({ data, index }: PageProps) {
     data: data,
     columns:
       index === 1
-        ? Table1Header
+        ? CategoriesHeader
         : index === 2
-        ? Table2Header
+        ? ItemsHeader
         : index === 3
         ? Table3Header
         : index === 4
@@ -118,10 +118,10 @@ export default function AdminDataTable({ data, index }: PageProps) {
     <div className="w-full p-2">
       <div className="flex items-center py-4 gap-2">
         <Input
-          placeholder="Filter Titles..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter Category..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

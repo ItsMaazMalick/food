@@ -10,7 +10,7 @@ export default async function AuthLayout({
   children: React.ReactNode;
 }) {
   const session = await getAdminSession();
-  if (session) {
+  if (session?.success) {
     redirect("/admin/dashboard");
   }
   return (
