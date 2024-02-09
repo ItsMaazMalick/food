@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/db";
-import { saveFile } from "@/lib/saveFile";
+import { uploadImage } from "@/lib/uploadImage";
 import { extrasSchema } from "@/lib/validations/extrasValidation";
 import { revalidatePath } from "next/cache";
 
@@ -24,17 +24,10 @@ export async function createExtras(formData: FormData) {
     };
   }
   const { name, price } = validatedFields.data;
-  const image = formData.get("image") as File;
+  const file = formData.get("image") as File;
+  const image = await uploadImage(file);
+
   if (!image) {
-    return {
-      status: 401,
-      success: false,
-      message: "Image is required",
-      // errors: validatedFields.error.flatten().fieldErrors,
-    };
-  }
-  const imagePath = await saveFile(image, "extras");
-  if (!imagePath) {
     return {
       status: 401,
       success: false,
@@ -45,7 +38,7 @@ export async function createExtras(formData: FormData) {
   const extras = await prisma.extras.create({
     data: {
       name,
-      image: imagePath,
+      image,
       price,
     },
   });

@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/lib/db";
-import { saveFile } from "@/lib/saveFile";
+import { uploadImage } from "@/lib/uploadImage";
 import { itemSchema } from "@/lib/validations/itemValidation";
 import { Featured } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -33,9 +33,10 @@ export async function createItem(formData: FormData) {
   const extrasString = formData.get("extras")?.toString();
   const extras = extrasString ? extrasString.split(",") : [];
   // console.log(extras);
-  const image = formData.get("image") as File;
-  const imagePath = await saveFile(image, "items");
-  if (!imagePath) {
+  const file = formData.get("image") as File;
+
+  const image = await uploadImage(file);
+  if (!image) {
     return {
       status: 401,
       success: false,
@@ -50,7 +51,7 @@ export async function createItem(formData: FormData) {
     item = await prisma.item.create({
       data: {
         name,
-        image: imagePath,
+        image,
         inStock,
         originalPrice,
         salePrice,
@@ -66,7 +67,7 @@ export async function createItem(formData: FormData) {
     item = await prisma.item.create({
       data: {
         name,
-        image: imagePath,
+        image,
         inStock,
         originalPrice,
         salePrice,

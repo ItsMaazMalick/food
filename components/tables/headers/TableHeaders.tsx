@@ -72,7 +72,7 @@ export const ItemsHeader: ColumnDef<any>[] = [
     cell: ({ row }) => (
       <div className="relative w-14 h-10">
         <Image
-          src={`/images/items/${row.original.image}`}
+          src={row.original.image}
           alt={row.original.name}
           fill
           className="rounded-md object-cover"
@@ -140,7 +140,7 @@ export const ExtrasHeader: ColumnDef<any>[] = [
     cell: ({ row }) => (
       <div className="relative w-14 h-10">
         <Image
-          src={`/images/extras/${row.original.image}`}
+          src={row.original.image}
           alt={row.original.name}
           fill
           className="rounded-md object-cover"
