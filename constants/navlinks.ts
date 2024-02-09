@@ -11,4 +11,8 @@ export const navLinks = [
     title: "Items",
     href: "/admin/dashboard/items",
   },
+  {
+    title: "Extras",
+    href: "/admin/dashboard/extras",
+  },
 ];

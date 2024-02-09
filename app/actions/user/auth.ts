@@ -1,5 +1,6 @@
 "use server";
 
+import { codeGenerator } from "@/lib/codeGenerator";
 import prisma from "@/lib/db";
 import {
   userLoginSchema,
@@ -7,16 +8,6 @@ import {
 } from "@/lib/validations/userValidation";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
-const referralCodeGenerator = (length: number) => {
-  const dataSet =
-    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let code = "";
-  for (var i = 0, n = dataSet.length; i < length; ++i) {
-    code += dataSet.charAt(Math.floor(Math.random() * n));
-  }
-  return code;
-};
 
 type RegisterProps = {
   name: string;
@@ -129,7 +120,7 @@ export async function registerUser({
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
-  const refCode = referralCodeGenerator(16);
+  const refCode = codeGenerator(16);
   const newUser = await prisma.user.create({
     data: {
       name,

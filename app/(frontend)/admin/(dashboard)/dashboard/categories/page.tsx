@@ -9,7 +9,6 @@ export default async function Categories() {
   return (
     <div className="w-full">
       <TopContainer title="Categories" link={<BackButton />} />
-      {/* TABLE */}
       <div className="mt-2">
         <AddCategoryForm />
       </div>

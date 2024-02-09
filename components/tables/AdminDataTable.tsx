@@ -6,7 +6,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -30,6 +29,9 @@ import {
 } from "@/components/ui/table";
 import { ArrowUpDown } from "lucide-react";
 import {
+  CategoriesHeader,
+  ExtrasHeader,
+  ItemsHeader,
   Table10Header,
   Table11Header,
   Table12Header,
@@ -40,9 +42,6 @@ import {
   Table17Header,
   Table18Header,
   Table19Header,
-  CategoriesHeader,
-  ItemsHeader,
-  Table3Header,
   Table4Header,
   Table5Header,
   Table6Header,
@@ -70,7 +69,7 @@ export default function AdminDataTable({ data, index }: PageProps) {
         : index === 2
         ? ItemsHeader
         : index === 3
-        ? Table3Header
+        ? ExtrasHeader
         : index === 4
         ? Table4Header
         : index === 5
@@ -118,7 +117,7 @@ export default function AdminDataTable({ data, index }: PageProps) {
     <div className="w-full p-2">
       <div className="flex items-center py-4 gap-2">
         <Input
-          placeholder="Filter Category..."
+          placeholder="Filter Name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)

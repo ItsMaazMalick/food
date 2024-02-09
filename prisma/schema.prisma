@@ -32,17 +32,26 @@ model Category {
 model Item {
   id            String      @id @default(auto()) @map("_id") @db.ObjectId
   name          String
-  mainImage     String
-  images        String[]
+  image         String
   inStock       Int
   originalPrice Float
   salePrice     Float
   featured      Featured    @default(TRUE)
   category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId    String      @db.ObjectId
+  extras        String[]
+  orderItems    OrderItem[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
-  orderItems    OrderItem[]
+}
+
+model Extras {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  image     String
+  price     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model User {

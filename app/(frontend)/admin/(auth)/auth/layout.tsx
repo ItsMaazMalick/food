@@ -14,7 +14,7 @@ export default async function AuthLayout({
     redirect("/admin/dashboard");
   }
   return (
-    <div className="w-screen min-h-screen">
+    <div className="w-screen min-h-screen flex justify-center items-center">
       <div className="absolute w-screen h-screen top-0 left-0 blur-sm object-contain">
         <Image src={"/images/bg-image.gif"} alt="LOGO" fill />
       </div>

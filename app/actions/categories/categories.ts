@@ -60,17 +60,7 @@ export async function getDataByCategory(category: string) {
         id: true,
         name: true,
         slug: true,
-        items: {
-          select: {
-            id: true,
-            name: true,
-            images: true,
-            featured: true,
-            inStock: true,
-            originalPrice: true,
-            salePrice: true,
-          },
-        },
+        items: true,
       },
     });
     return data;
@@ -81,16 +71,7 @@ export async function getDataByCategory(category: string) {
         id: true,
         name: true,
         slug: true,
-        items: {
-          select: {
-            id: true,
-            name: true,
-            images: true,
-            inStock: true,
-            originalPrice: true,
-            salePrice: true,
-          },
-        },
+        items: true,
       },
     });
     return data;
