@@ -35,7 +35,7 @@ export async function createItem(formData: FormData) {
   // console.log(extras);
   const file = formData.get("image") as File;
 
-  const image = await uploadImage(file);
+  const image = await uploadImage(file, "items");
   if (!image) {
     return {
       status: 401,

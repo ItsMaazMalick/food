@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 
-export async function uploadImage(image: File) {
+export async function uploadImage(image: File, folder: string) {
   const arrayBuffer = await image.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
@@ -13,7 +13,7 @@ export async function uploadImage(image: File) {
 
   const res: any = await new Promise((resolve, reject) => {
     cloudinary.uploader
-      .upload_stream({}, function (error, result) {
+      .upload_stream({ folder: folder }, function (error, result) {
         if (error) {
           reject(error);
           return;
@@ -22,7 +22,8 @@ export async function uploadImage(image: File) {
       })
       .end(buffer);
   });
-  const secureUrl = res.secure_url;
+  console.log(res);
+  const secureUrl = await res.secure_url;
   if (!secureUrl) {
     return null;
   }

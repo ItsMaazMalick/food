@@ -32,6 +32,7 @@ export default function AddExtrasForm() {
     formData.append("name", values.name);
     formData.append("image", image as File);
     formData.append("price", String(values.price));
+    setImage(null);
     const result = await createExtras(formData);
     form.reset();
     if (result) {
