@@ -1,4 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
+import { UploadApiResponse } from "cloudinary";
+import streamifier from "streamifier";
 
 export async function uploadImage(image: File, folder: string) {
   const arrayBuffer = await image.arrayBuffer();
@@ -31,4 +33,29 @@ export async function uploadImage(image: File, folder: string) {
     return null;
   }
   return secureUrl;
+}
+
+export async function uploadImage2(
+  buffer: Buffer,
+  folder: string
+): Promise<UploadApiResponse> {
+  cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET,
+    secure: true,
+  });
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: folder,
+        upload_preset: "ml_default",
+      },
+      (error, result) => {
+        if (result) resolve(result);
+        else reject(error);
+      }
+    );
+    streamifier.createReadStream(buffer).pipe(uploadStream);
+  });
 }
