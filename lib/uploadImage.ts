@@ -2,12 +2,13 @@ import { v2 as cloudinary } from "cloudinary";
 
 export async function uploadImage(image: File) {
   const arrayBuffer = await image.arrayBuffer();
-  const buffer = new Uint8Array(arrayBuffer);
+  const buffer = Buffer.from(arrayBuffer);
 
   cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUD_API_KEY,
     api_secret: process.env.CLOUD_API_SECRET,
+    secure: true,
   });
 
   const res: any = await new Promise((resolve, reject) => {

@@ -26,6 +26,7 @@ export async function createExtras(formData: FormData) {
   const { name, price } = validatedFields.data;
   const file = formData.get("image") as File;
   const image = await uploadImage(file);
+  console.log(image);
 
   if (!image) {
     return {
