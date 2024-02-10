@@ -4,6 +4,7 @@ export async function uploadImage(image: File, folder: string) {
   const arrayBuffer = await image.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
 
+  console.log("Starting Cloudinary upload...");
   cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUD_API_KEY,
@@ -15,9 +16,11 @@ export async function uploadImage(image: File, folder: string) {
     cloudinary.uploader
       .upload_stream({ folder: folder }, function (error, result) {
         if (error) {
+          console.error("Cloudinary upload error:", error);
           reject(error);
           return;
         }
+        console.log("Cloudinary upload successful. Result:", result);
         resolve(result);
       })
       .end(buffer);
