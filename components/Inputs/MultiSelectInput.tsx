@@ -53,7 +53,7 @@ export default function MultiSelectInput({
   onSelectionChange(selectedIds);
 
   return (
-    <>
+    <div>
       <div className="mb-2">{label}</div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -85,6 +85,6 @@ export default function MultiSelectInput({
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
-    </>
+    </div>
   );
 }

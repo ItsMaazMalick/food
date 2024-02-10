@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/lib/db";
-import { uploadImage } from "@/lib/uploadImage";
+import { uploadImage } from "@/lib/handleImage";
 import { itemSchema } from "@/lib/validations/itemValidation";
 import { Featured } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -109,7 +109,15 @@ export async function createItem(formData: FormData) {
 }
 
 export async function deleteItem({ id, path }: { id: string; path: string }) {
-  const result = await prisma.item.delete({
+  const item = await prisma.item.findUnique({ where: { id } });
+  if (!item) {
+    return {
+      status: 401,
+      success: false,
+      message: "No record found",
+    };
+  }
+  await prisma.item.delete({
     where: { id },
   });
   revalidatePath(path);

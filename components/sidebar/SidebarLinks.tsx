@@ -10,7 +10,7 @@ export default function SidebarLinks() {
     <div className="w-full flex flex-col gap-4 p-2 h-full">
       {navLinks.map((link) => (
         <Link
-          className={`p-2 rounded-md ${
+          className={`p-2 rounded-md flex gap-2 items-center ${
             pathname === link.href
               ? "text-primary-foreground bg-secondary"
               : "text-secondary bg-primary"
@@ -19,6 +19,7 @@ export default function SidebarLinks() {
           href={link.href}
           key={link.title}
         >
+          <span>{link.icon}</span>
           {link.title}
         </Link>
       ))}

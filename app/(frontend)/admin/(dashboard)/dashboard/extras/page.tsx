@@ -8,7 +8,7 @@ export default async function Extras() {
   const extras = await getAllExtras();
   return (
     <div className="w-full">
-      <TopContainer title="Categories" link={<BackButton />} />
+      <TopContainer title="Extras" link={<BackButton />} />
       <div className="mt-2">
         <AddExtrasForm />
       </div>

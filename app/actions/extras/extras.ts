@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/db";
-import { uploadImage } from "@/lib/uploadImage";
+import { uploadImage } from "@/lib/handleImage";
 import { extrasSchema } from "@/lib/validations/extrasValidation";
 import { revalidatePath } from "next/cache";
 
