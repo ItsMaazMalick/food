@@ -27,8 +27,6 @@ export async function createExtras(formData: FormData) {
   const file = formData.get("image") as File;
   const image = await uploadImage(file);
 
-  console.log(image);
-
   if (!image) {
     return {
       status: 401,
