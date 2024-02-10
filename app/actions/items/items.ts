@@ -33,16 +33,31 @@ export async function createItem(formData: FormData) {
   const extrasString = formData.get("extras")?.toString();
   const extras = extrasString ? extrasString.split(",") : [];
   // console.log(extras);
-  const file = formData.get("image") as File;
 
-  const image = await uploadImage(file, "items");
-  if (!image) {
+  const file = formData.get("image") as unknown as File;
+
+  if (!file.name) {
     return {
       status: 401,
       success: false,
-      message: "Error saving file",
+      message: "Image is required",
       // errors: validatedFields.error.flatten().fieldErrors,
     };
+  }
+
+  if (file.size > 1000000) {
+    return {
+      status: 401,
+      success: false,
+      message: "Image size must be less than 1MB",
+      // errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { image, error } = await uploadImage(file);
+
+  if (error) {
+    return error;
   }
 
   let item;
