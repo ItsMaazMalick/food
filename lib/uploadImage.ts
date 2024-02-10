@@ -1,8 +1,11 @@
 import { v2 as cloudinary } from "cloudinary";
 
 export async function uploadImage(image: File, folder: string) {
+  console.log("1st");
   const arrayBuffer = await image.arrayBuffer();
+  console.log("2nd");
   const buffer = Buffer.from(arrayBuffer);
+  console.log("3rd");
 
   cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -22,6 +25,7 @@ export async function uploadImage(image: File, folder: string) {
       })
       .end(buffer);
   });
+  console.log("4th");
   console.log(res);
   const secureUrl = await res.secure_url;
   if (!secureUrl) {
