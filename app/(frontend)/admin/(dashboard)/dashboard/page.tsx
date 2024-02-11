@@ -1,6 +1,9 @@
 import { getDataByCategory } from "@/app/actions/categories/categories";
+import { getAllExtras } from "@/app/actions/extras/extras";
 import { getAllItems } from "@/app/actions/items/items";
 import TopCard from "@/components/cards/TopCard";
+import PieChart from "@/components/charts/PieChart";
+import Example from "@/components/charts/PieChart";
 import TopContainer from "@/components/header/TopContainer";
 import AdminDataTable from "@/components/tables/AdminDataTable";
 import { Input } from "@/components/ui/input";
@@ -17,6 +20,7 @@ import {
 export default async function AdminDashboard() {
   const categories = await getDataByCategory("all");
   const items = await getAllItems();
+  const extras = await getAllExtras();
   return (
     <div className="w-full">
       {/* TOP CONTAINER */}
@@ -49,6 +53,16 @@ export default async function AdminDashboard() {
         />
       </div>
       <div className="w-full sm:w-[calc(100vw-170px)] md:w-[calc(100vw-240px)] max-h-[400px] overflow-y-auto overflow-x-auto">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-12 ">
+          <div className=" bg-white h-[350px] md:col-span-8 shadow-md rounded-md">
+            {/* <p className="p-2 text-xl font-bold text-primary">Calculations</p> */}
+            <PieChart
+              categoryLength={categories.length}
+              itemsLength={items.length}
+              extrasLength={extras.length}
+            />
+          </div>
+        </div>
         <div className="mt-4 bg-white">
           <p className="p-2 text-xl font-bold text-primary">Categories</p>
           <AdminDataTable index={1} data={categories} />
