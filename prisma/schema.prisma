@@ -50,7 +50,7 @@ model Extras {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   image     String
-  price     Int
+  price     Float
   itemId    String[] @db.ObjectId
   items     Item[]   @relation(fields: [itemId], references: [id])
   createdAt DateTime @default(now())
