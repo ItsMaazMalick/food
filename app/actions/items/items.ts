@@ -1,6 +1,6 @@
 "use server";
 import prisma from "@/lib/db";
-import { uploadImage } from "@/lib/handleImage";
+import { deleteImage, uploadImage } from "@/lib/handleImage";
 import { itemSchema } from "@/lib/validations/itemValidation";
 import { Featured } from "@prisma/client";
 import { revalidatePath } from "next/cache";
@@ -92,7 +92,6 @@ export async function createItem(formData: FormData) {
             id: categoryId,
           },
         },
-        extras: extras,
       },
     });
   }
@@ -105,7 +104,44 @@ export async function createItem(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
+  if (extras) {
+    await prisma.item.update({
+      where: { id: item.id },
+      data: {
+        extrasId: extras,
+      },
+    });
+  }
+
   revalidatePath("/admin/dashboard/items");
+}
+
+export async function getSingleItem(id: string) {
+  if (!id) {
+    return {
+      status: 401,
+      success: false,
+      message: "Invalid data provided",
+      // errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+  const item = await prisma.item.findUnique({
+    where: { id },
+  });
+  if (!item) {
+    return {
+      status: 404,
+      success: false,
+      message: "No item found",
+      // errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+  return {
+    status: 200,
+    success: true,
+    item,
+    // errors: validatedFields.error.flatten().fieldErrors,
+  };
 }
 
 export async function deleteItem({ id, path }: { id: string; path: string }) {
@@ -115,6 +151,14 @@ export async function deleteItem({ id, path }: { id: string; path: string }) {
       status: 401,
       success: false,
       message: "No record found",
+    };
+  }
+  const { error } = await deleteImage(item.image);
+  if (error) {
+    return {
+      status: 401,
+      success: false,
+      message: "Error deleting image",
     };
   }
   await prisma.item.delete({

@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import FormSubmitButton from "../button/FormSubmitButton";
 import { deleteItem } from "@/app/actions/items/items";
+import { deleteExtras } from "@/app/actions/extras/extras";
 
 export default function AlertComponent({
   id,
@@ -31,6 +32,8 @@ export default function AlertComponent({
       });
     } else if (target === "item") {
       deleteItem({ id, path });
+    } else if (target === "extras") {
+      deleteExtras({ id, path });
     }
   };
 

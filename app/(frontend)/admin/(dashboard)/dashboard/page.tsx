@@ -16,6 +16,7 @@ import {
   Salad,
   Search,
 } from "lucide-react";
+import Image from "next/image";
 
 export default async function AdminDashboard() {
   const categories = await getDataByCategory("all");
@@ -53,14 +54,24 @@ export default async function AdminDashboard() {
         />
       </div>
       <div className="w-full sm:w-[calc(100vw-170px)] md:w-[calc(100vw-240px)] max-h-[400px] overflow-y-auto overflow-x-auto">
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-12 ">
-          <div className=" bg-white h-[350px] md:col-span-8 shadow-md rounded-md">
+        <div className="mt-4 grid grid-cols-1 md:grid-cols-12 h-[350px] gap-4">
+          <div className=" bg-white  md:col-span-8 shadow-md rounded-md">
             {/* <p className="p-2 text-xl font-bold text-primary">Calculations</p> */}
             <PieChart
               categoryLength={categories.length}
               itemsLength={items.length}
               extrasLength={extras.length}
             />
+          </div>
+          <div className="md:col-span-4 bg-white rounded-md shadow-md flex justify-center items-center">
+            <div className="relative w-[100%] h-full">
+              <Image
+                src={"/images/logo.jpeg"}
+                alt="Gyro's N More"
+                fill
+                className="object-center"
+              />
+            </div>
           </div>
         </div>
         <div className="mt-4 bg-white">

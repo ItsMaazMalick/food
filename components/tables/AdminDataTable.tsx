@@ -32,22 +32,6 @@ import {
   CategoriesHeader,
   ExtrasHeader,
   ItemsHeader,
-  Table10Header,
-  Table11Header,
-  Table12Header,
-  Table13Header,
-  Table14Header,
-  Table15Header,
-  Table16Header,
-  Table17Header,
-  Table18Header,
-  Table19Header,
-  Table4Header,
-  Table5Header,
-  Table6Header,
-  Table7Header,
-  Table8Header,
-  Table9Header,
 } from "./headers/TableHeaders";
 
 type PageProps = {
@@ -64,43 +48,8 @@ export default function AdminDataTable({ data, index }: PageProps) {
   const table = useReactTable({
     data: data,
     columns:
-      index === 1
-        ? CategoriesHeader
-        : index === 2
-        ? ItemsHeader
-        : index === 3
-        ? ExtrasHeader
-        : index === 4
-        ? Table4Header
-        : index === 5
-        ? Table5Header
-        : index === 6
-        ? Table6Header
-        : index === 7
-        ? Table7Header
-        : index === 8
-        ? Table8Header
-        : index === 9
-        ? Table9Header
-        : index === 10
-        ? Table10Header
-        : index === 11
-        ? Table11Header
-        : index === 12
-        ? Table12Header
-        : index === 13
-        ? Table13Header
-        : index === 14
-        ? Table14Header
-        : index === 15
-        ? Table15Header
-        : index === 16
-        ? Table16Header
-        : index === 17
-        ? Table17Header
-        : index === 18
-        ? Table18Header
-        : Table19Header,
+      index === 1 ? CategoriesHeader : index === 2 ? ItemsHeader : ExtrasHeader,
+
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),

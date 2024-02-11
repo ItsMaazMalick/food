@@ -14,12 +14,12 @@ export default function PieChart({
 }: PageProps) {
   const data = [
     ["Option", "Value", { role: "style" }],
-    ["Categories", categoryLength, "#f6a119"], // RGB value
-    ["Items", itemsLength, "#f6a119"], // English color name
-    ["Extras", extrasLength, "#f6a119"],
-    ["Total Orders", 50, "#f6a119"], // CSS-style declaration
-    ["Orders Completed", 49, "#f6a119"], // CSS-style declaration
-    ["Orders Pending", 1, "#f6a119"], // CSS-style declaration
+    ["Categories", categoryLength, "#4bbfc8"], // RGB value
+    ["Items", itemsLength, "#1C66AA"], // English color name
+    ["Extras", extrasLength, "#f07400"],
+    ["Total Orders", 10, "#CF2F68"], // CSS-style declaration
+    ["Orders Completed", 9, "#8AA43A"], // CSS-style declaration
+    ["Orders Pending", 1, "#F57601"], // CSS-style declaration
   ];
 
   const options = {

@@ -39,7 +39,8 @@ model Item {
   featured      Featured    @default(TRUE)
   category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId    String      @db.ObjectId
-  extras        String[]
+  extrasId      String[]    @db.ObjectId
+  extras        Extras[]    @relation(fields: [extrasId], references: [id])
   orderItems    OrderItem[]
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
@@ -50,6 +51,8 @@ model Extras {
   name      String
   image     String
   price     Int
+  itemId    String[] @db.ObjectId
+  items     Item[]   @relation(fields: [itemId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

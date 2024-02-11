@@ -1,5 +1,5 @@
 "use server";
-import { put } from "@vercel/blob";
+import { del, put } from "@vercel/blob";
 import path from "path";
 import { codeGenerator } from "./codeGenerator";
 
@@ -30,12 +30,29 @@ export async function uploadImage(file: File) {
     const blob = await put(filename, file, {
       access: "public",
     });
-    const image = blob.url.split(".com/")[1];
-    return { image, error: null };
+    return { image: blob.url, error: null };
   } catch (error) {
     return {
       image: null,
       error: { status: 500, success: false, message: "Internal server error" },
     };
+  }
+}
+
+export async function deleteImage(filename: string) {
+  try {
+    if (!filename) {
+      return {
+        success: null,
+        error: "Image not found",
+      };
+    }
+    await del(filename);
+    return {
+      success: "File successfully deleted",
+      error: null,
+    };
+  } catch (error) {
+    return { success: null, error: "Internal server error" };
   }
 }
