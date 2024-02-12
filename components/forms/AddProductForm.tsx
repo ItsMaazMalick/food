@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { categorySchema } from "@/lib/validations/categorySchema";
-import { itemSchema } from "@/lib/validations/itemValidation";
+import { productSchema } from "@/lib/validations/itemValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -27,18 +27,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { createItem } from "@/app/actions/items/items";
 import { Label } from "../ui/label";
 import MultiSelectInput from "../Inputs/MultiSelectInput";
+import { createProduct } from "@/app/actions/product/product";
 
-const formSchema = itemSchema;
+const formSchema = productSchema;
 
 type PageProps = {
   categories: any;
   extras: any;
 };
 
-export default function AddItemForm({ categories, extras }: PageProps) {
+export default function AddProductForm({ categories, extras }: PageProps) {
   const [image, setImage] = useState<File | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<string[]>();
   const [error, setError] = useState("");
@@ -51,6 +51,7 @@ export default function AddItemForm({ categories, extras }: PageProps) {
       originalPrice: 0,
       salePrice: 0,
       featured: "",
+      isRecommended: "",
     },
   });
 
@@ -65,11 +66,12 @@ export default function AddItemForm({ categories, extras }: PageProps) {
     formData.append("originalPrice", String(values.originalPrice));
     formData.append("salePrice", String(values.salePrice));
     formData.append("featured", values.featured);
+    formData.append("isRecommended", values.isRecommended);
     formData.append("extras", selectedExtras ? selectedExtras.join(",") : "");
     // if (selectedExtras) {
     //   formData.append("extras", selectedExtras.join(","));
     // }
-    const result = await createItem(formData);
+    const result = await createProduct(formData);
     form.reset();
     form.reset();
     if (result) {
@@ -147,6 +149,30 @@ export default function AddItemForm({ categories, extras }: PageProps) {
                           <SelectLabel>Featured</SelectLabel>
                           <SelectItem value="FALSE">FALSE</SelectItem>
                           <SelectItem value="TRUE">TRUE</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                      <FormMessage />
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="isRecommended"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Recommended</FormLabel>
+                    <Select onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a value" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Recommended</SelectLabel>
+                          <SelectItem value="FALSE">NO</SelectItem>
+                          <SelectItem value="TRUE">YES</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                       <FormMessage />

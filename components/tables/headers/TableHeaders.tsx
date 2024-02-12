@@ -96,16 +96,25 @@ export const ItemsHeader: ColumnDef<any>[] = [
     cell: ({ row }) => <div>{row.getValue("salePrice")}</div>,
   },
   {
+    accessorKey: "isRecommended",
+    header: "Recommended",
+    cell: ({ row }) => (
+      <div>{row.getValue("isRecommended") ? "TRUE" : "FALSE"}</div>
+    ),
+  },
+  {
     accessorKey: "featured",
     header: "Featured",
-    cell: ({ row }) => <div>{row.getValue("featured")}</div>,
+    cell: ({ row }) => <div>{row.getValue("featured") ? "TRUE" : "FALSE"}</div>,
   },
   {
     accessorKey: "actions",
     header: ({ column }) => <div className="text-end">Action</div>,
     cell: ({ row }) => (
       <div className="flex items-center gap-4 justify-end">
-        <Link href={`/admin/dashboard/items/edit-item/${row.original.id}`}>
+        <Link
+          href={`/admin/dashboard/products/edit-product/${row.original.id}`}
+        >
           <Button size={"xs"}>Edit</Button>
         </Link>
         <AlertComponent

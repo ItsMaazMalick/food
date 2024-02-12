@@ -12,8 +12,8 @@ export const navLinks = [
     icon: <Boxes size={18} />,
   },
   {
-    title: "Items",
-    href: "/admin/dashboard/items",
+    title: "Products",
+    href: "/admin/dashboard/products",
     icon: <ShoppingBasket size={18} />,
   },
   {

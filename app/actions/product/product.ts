@@ -1,23 +1,23 @@
 "use server";
 import prisma from "@/lib/db";
 import { deleteImage, uploadImage } from "@/lib/handleImage";
-import { itemSchema } from "@/lib/validations/itemValidation";
-import { Featured } from "@prisma/client";
+import { productSchema } from "@/lib/validations/itemValidation";
 import { revalidatePath } from "next/cache";
 
-export async function getAllItems() {
-  const data = await prisma.item.findMany();
+export async function getAllProducts() {
+  const data = await prisma.product.findMany();
   return data;
 }
 
-export async function createItem(formData: FormData) {
-  const validatedFields = itemSchema.safeParse({
+export async function createProduct(formData: FormData) {
+  const validatedFields = productSchema.safeParse({
     name: String(formData.get("name")),
     categoryId: String(formData.get("categoryId")),
     inStock: Number(formData.get("inStock")),
     originalPrice: Number(formData.get("originalPrice")),
     salePrice: Number(formData.get("salePrice")),
     featured: formData.get("featured"),
+    isRecommended: formData.get("isRecommended"),
   });
   if (!validatedFields.success) {
     console.log(validatedFields.error.flatten().fieldErrors);
@@ -28,8 +28,15 @@ export async function createItem(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  const { name, categoryId, inStock, originalPrice, salePrice, featured } =
-    validatedFields.data;
+  const {
+    name,
+    categoryId,
+    inStock,
+    originalPrice,
+    salePrice,
+    featured,
+    isRecommended,
+  } = validatedFields.data;
   const extrasString = formData.get("extras")?.toString();
   const extras = extrasString ? extrasString.split(",") : [];
   // console.log(extras);
@@ -60,17 +67,18 @@ export async function createItem(formData: FormData) {
     return error;
   }
 
-  let item;
+  let product;
 
   if (!extrasString) {
-    item = await prisma.item.create({
+    product = await prisma.product.create({
       data: {
         name,
         image,
         inStock,
         originalPrice,
         salePrice,
-        featured: featured === "TRUE" ? Featured.TRUE : Featured.FALSE,
+        featured: featured === "TRUE" ? true : false,
+        isRecommended: isRecommended === "TRUE" ? true : false,
         category: {
           connect: {
             id: categoryId,
@@ -79,14 +87,15 @@ export async function createItem(formData: FormData) {
       },
     });
   } else {
-    item = await prisma.item.create({
+    product = await prisma.product.create({
       data: {
         name,
         image,
         inStock,
         originalPrice,
         salePrice,
-        featured: featured === "TRUE" ? Featured.TRUE : Featured.FALSE,
+        featured: featured === "TRUE" ? true : false,
+        isRecommended: isRecommended === "TRUE" ? true : false,
         category: {
           connect: {
             id: categoryId,
@@ -96,7 +105,7 @@ export async function createItem(formData: FormData) {
     });
   }
 
-  if (!item) {
+  if (!product) {
     return {
       status: 401,
       success: false,
@@ -105,8 +114,8 @@ export async function createItem(formData: FormData) {
     };
   }
   if (extras) {
-    await prisma.item.update({
-      where: { id: item.id },
+    await prisma.product.update({
+      where: { id: product.id },
       data: {
         extrasId: extras,
       },
@@ -116,7 +125,7 @@ export async function createItem(formData: FormData) {
   revalidatePath("/admin/dashboard/items");
 }
 
-export async function getSingleItem(id: string) {
+export async function getSingleProduct(id: string) {
   if (!id) {
     return {
       status: 401,
@@ -125,10 +134,10 @@ export async function getSingleItem(id: string) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  const item = await prisma.item.findUnique({
+  const product = await prisma.product.findUnique({
     where: { id },
   });
-  if (!item) {
+  if (!product) {
     return {
       status: 404,
       success: false,
@@ -139,21 +148,27 @@ export async function getSingleItem(id: string) {
   return {
     status: 200,
     success: true,
-    item,
+    product,
     // errors: validatedFields.error.flatten().fieldErrors,
   };
 }
 
-export async function deleteItem({ id, path }: { id: string; path: string }) {
-  const item = await prisma.item.findUnique({ where: { id } });
-  if (!item) {
+export async function deleteProcuct({
+  id,
+  path,
+}: {
+  id: string;
+  path: string;
+}) {
+  const product = await prisma.product.findUnique({ where: { id } });
+  if (!product) {
     return {
       status: 401,
       success: false,
       message: "No record found",
     };
   }
-  const { error } = await deleteImage(item.image);
+  const { error } = await deleteImage(product.image);
   if (error) {
     return {
       status: 401,
@@ -161,7 +176,7 @@ export async function deleteItem({ id, path }: { id: string; path: string }) {
       message: "Error deleting image",
     };
   }
-  await prisma.item.delete({
+  await prisma.product.delete({
     where: { id },
   });
   revalidatePath(path);

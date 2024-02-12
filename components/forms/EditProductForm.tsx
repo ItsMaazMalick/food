@@ -11,7 +11,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { categorySchema } from "@/lib/validations/categorySchema";
-import { itemSchema } from "@/lib/validations/itemValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -27,32 +26,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { createItem } from "@/app/actions/items/items";
 import { Label } from "../ui/label";
 import MultiSelectInput from "../Inputs/MultiSelectInput";
 import DefaultValue from "../Inputs/DefaultValue";
+import { createProduct } from "@/app/actions/product/product";
+import { productSchema } from "@/lib/validations/itemValidation";
 
-const formSchema = itemSchema;
+const formSchema = productSchema;
 
 type PageProps = {
   categories: any;
   extras: any;
-  item: any;
+  product: any;
 };
 
-export default function EditItemForm({ categories, extras, item }: PageProps) {
+export default function EditProductForm({
+  categories,
+  extras,
+  product,
+}: PageProps) {
   const [image, setImage] = useState<File | null>(null);
   const [selectedExtras, setSelectedExtras] = useState<string[]>();
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: item.name,
+      name: product.name,
       categoryId: "123",
-      inStock: item.inStock,
-      originalPrice: item.originalPrice,
-      salePrice: item.salePrice,
-      featured: item.featured,
+      inStock: product.inStock,
+      originalPrice: product.originalPrice,
+      salePrice: product.salePrice,
+      featured: product.featured,
     },
   });
 
@@ -71,7 +75,7 @@ export default function EditItemForm({ categories, extras, item }: PageProps) {
     // if (selectedExtras) {
     //   formData.append("extras", selectedExtras.join(","));
     // }
-    const result = await createItem(formData);
+    const result = await createProduct(formData);
     form.reset();
     form.reset();
     if (result) {
@@ -96,7 +100,7 @@ export default function EditItemForm({ categories, extras, item }: PageProps) {
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
               <TextInput label="Item Name" name="name" control={form.control} />
-              <DefaultValue data={extras} id={item.extras} />
+              {/* <DefaultValue data={extras} id={product.extras} /> */}
               <SelectInput
                 label="Category"
                 name="categoryId"

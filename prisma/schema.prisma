@@ -15,28 +15,29 @@ model Admin {
   name      String
   email     String   @unique
   password  String
-  isAdmin   IsAdmin  @default(PENDING)
+  isAdmin   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Category {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   name      String
-  slug      String   @unique
-  items     Item[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  slug      String    @unique
+  items     Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
-model Item {
+model Product {
   id            String      @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   image         String
   inStock       Int
   originalPrice Float
   salePrice     Float
-  featured      Featured    @default(TRUE)
+  featured      Boolean
+  isRecommended Boolean
   category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId    String      @db.ObjectId
   extrasId      String[]    @db.ObjectId
@@ -47,14 +48,14 @@ model Item {
 }
 
 model Extras {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   image     String
   price     Float
-  itemId    String[] @db.ObjectId
-  items     Item[]   @relation(fields: [itemId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  itemId    String[]  @db.ObjectId
+  products  Product[] @relation(fields: [itemId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model User {
@@ -88,7 +89,7 @@ model OrderItem {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   order     Order    @relation(fields: [orderId], references: [id])
   orderId   String   @db.ObjectId
-  item      Item     @relation(fields: [itemId], references: [id])
+  product   Product  @relation(fields: [itemId], references: [id])
   itemId    String   @db.ObjectId
   quantity  Int
   price     Float
@@ -96,20 +97,9 @@ model OrderItem {
   updatedAt DateTime @updatedAt
 }
 
-enum Featured {
-  TRUE
-  FALSE
-}
-
 enum Status {
   PENDING
   CONFIRM
   DELIVERED
   DISPATCHED
-}
-
-enum IsAdmin {
-  PENDING
-  APPROVED
-  REJECTED
 }

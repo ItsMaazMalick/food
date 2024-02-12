@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import FormSubmitButton from "../button/FormSubmitButton";
-import { deleteItem } from "@/app/actions/items/items";
+import { deleteItem } from "@/app/actions/product/product";
 import { deleteExtras } from "@/app/actions/extras/extras";
 
 export default function AlertComponent({
