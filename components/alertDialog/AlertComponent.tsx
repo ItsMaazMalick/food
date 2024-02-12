@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import FormSubmitButton from "../button/FormSubmitButton";
-import { deleteItem } from "@/app/actions/product/product";
 import { deleteExtras } from "@/app/actions/extras/extras";
+import { deleteProcuct } from "@/app/actions/product/product";
 
 export default function AlertComponent({
   id,
@@ -31,7 +31,7 @@ export default function AlertComponent({
         path,
       });
     } else if (target === "item") {
-      deleteItem({ id, path });
+      deleteProcuct({ id, path });
     } else if (target === "extras") {
       deleteExtras({ id, path });
     }

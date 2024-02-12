@@ -71,7 +71,7 @@ export async function deleteExtras({ id, path }: { id: string; path: string }) {
 
   // TODO:
 
-  const data = await prisma.item.findMany({
+  const data = await prisma.product.findMany({
     where: {
       extrasId: {
         hasSome: [id],
@@ -85,7 +85,7 @@ export async function deleteExtras({ id, path }: { id: string; path: string }) {
   }));
 
   for (const array of updatedArray) {
-    await prisma.item.update({
+    await prisma.product.update({
       where: { id: array.id },
       data: {
         name: array.name,
