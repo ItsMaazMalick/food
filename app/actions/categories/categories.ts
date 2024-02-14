@@ -1,5 +1,6 @@
 "use server";
 import prisma from "@/lib/db";
+import { deleteImage, uploadImage } from "@/lib/handleImage";
 import { categorySchema } from "@/lib/validations/categorySchema";
 import { toSlug } from "@/lib/validations/slug";
 import { revalidatePath } from "next/cache";
@@ -31,10 +32,19 @@ export async function createCategory(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
+
+  const file = formData.get("image") as unknown as File;
+
+  const { image, error } = await uploadImage(file);
+
+  if (error) {
+    return error;
+  }
   const category = await prisma.category.create({
     data: {
       name,
       slug,
+      image,
     },
   });
   if (!category) {
@@ -60,6 +70,7 @@ export async function getDataByCategory(category: string) {
         id: true,
         name: true,
         slug: true,
+        image: true,
         items: true,
       },
     });
@@ -149,12 +160,23 @@ export async function updateCategory(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
+  const file = formData.get("image") as unknown as File;
+  let imageUrl = String(formData.get("imageUrl"));
+  if (file.name) {
+    const { image, error } = await uploadImage(file);
+    await deleteImage(imageUrl);
+    if (error) {
+      return error;
+    }
+    imageUrl = image;
+  }
 
   const newCategory = await prisma.category.update({
     where: { id: categoryId },
     data: {
       name,
       slug,
+      image: imageUrl,
     },
   });
   if (!newCategory) {

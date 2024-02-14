@@ -11,7 +11,7 @@ export default async function AuthLayout({
 }) {
   const session = await getAdminSession();
   if (session?.success) {
-    redirect("/admin/dashboard");
+    return redirect("/admin/dashboard");
   }
   return (
     <div className="w-screen min-h-screen flex justify-center items-center">

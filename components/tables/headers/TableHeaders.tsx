@@ -25,6 +25,20 @@ export const CategoriesHeader: ColumnDef<any>[] = [
     cell: ({ row }) => <div className="font-bold">{row.getValue("name")}</div>,
   },
   {
+    accessorKey: "image",
+    header: "Image",
+    cell: ({ row }) => (
+      <div className="relative w-14 h-10">
+        <Image
+          src={row.original.image}
+          alt={row.original.name}
+          fill
+          className="rounded-md object-center"
+        />
+      </div>
+    ),
+  },
+  {
     accessorKey: "items",
     header: "Items",
     cell: ({ row }) => <div>{row?.original?.items?.length}</div>,

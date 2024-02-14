@@ -10,7 +10,7 @@ export default async function DashboardLayout({
 }) {
   const session = await getAdminSession();
   if (!session?.success) {
-    redirect("/admin/auth/login");
+    return redirect("/admin/auth/login");
   }
   return (
     <div className="w-full min-h-screen flex bg-gray-100">
