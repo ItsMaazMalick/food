@@ -16,12 +16,21 @@ export const getPublicToken = () => {
   return token;
 };
 
+async function getHeaderToken() {
+  const token = headers().get("Authorization")?.split(" ")[1];
+  return new Promise((resolve) =>
+    setTimeout(() => {
+      resolve(token);
+    }, 1000)
+  );
+}
+
 export async function verifyPublicToken() {
-  const headerList = headers();
-  const token = headerList.get("Authorization")?.split(" ")[1];
+  const token: any = await getHeaderToken();
   if (!token) {
     return null;
   }
+  console.log(token);
   const decodedToken = jwt.decode(token);
   if (!decodedToken) {
     return null;
