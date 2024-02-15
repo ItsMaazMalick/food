@@ -1,6 +1,7 @@
 "use server";
 
 import jwt from "jsonwebtoken";
+import { headers } from "next/headers";
 
 export const getPublicToken = () => {
   const tokenData = process.env.TOKEN_VALUE;
@@ -15,7 +16,9 @@ export const getPublicToken = () => {
   return token;
 };
 
-export const verifyPublicToken = (token: string) => {
+export async function verifyPublicToken() {
+  const headerList = headers();
+  const token = headerList.get("Authorization")?.split(" ")[1];
   if (!token) {
     return null;
   }
@@ -32,4 +35,4 @@ export const verifyPublicToken = (token: string) => {
     return null;
   }
   return true;
-};
+}

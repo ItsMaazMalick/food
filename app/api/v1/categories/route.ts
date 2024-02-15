@@ -1,13 +1,11 @@
 import { verifyPublicToken } from "@/app/actions/publicToken";
 import prisma from "@/lib/db";
-import { headers } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const headerList = new Headers(request.headers);
-    const token = headerList.get("Authorization")?.split(" ")[1];
-    if (!token || !verifyPublicToken(token)) {
+    const token = await verifyPublicToken();
+    if (!token) {
       return NextResponse.json({ status: 401, message: "Invalid Request" });
     }
     const data = await prisma.category.findMany();
