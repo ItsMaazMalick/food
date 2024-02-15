@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
       status: 500,
       success: false,
       message: "Internal server error",
+      error,
     });
   }
 }
