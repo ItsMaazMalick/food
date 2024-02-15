@@ -6,10 +6,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const token = await verifyPublicToken();
-    if (!token) {
-      return NextResponse.json({ status: 401, message: "Invalid Request" });
-    }
+    // const token = await verifyPublicToken();
+    // if (!token) {
+    //   return NextResponse.json({ status: 401, message: "Invalid Request" });
+    // }
     const pathname = request.nextUrl.pathname;
     const params = pathname.split("/v1/categories/")[1];
 

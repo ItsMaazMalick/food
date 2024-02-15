@@ -5,10 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const token = await verifyPublicToken();
-    if (!token) {
-      return NextResponse.json({ status: 401, message: "Invalid Request" });
-    }
+    // const token = await verifyPublicToken();
+    // if (!token) {
+    //   return NextResponse.json({ status: 401, message: "Invalid Request" });
+    // }
     const data = await prisma.product.findMany();
     return NextResponse.json({ status: 200, success: true, data });
   } catch (error) {
