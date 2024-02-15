@@ -3,12 +3,18 @@ import prisma from "@/lib/db";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
-    // const token = await verifyPublicToken();
-    // if (!token) {
-    //   return NextResponse.json({ status: 401, message: "Invalid Request" });
-    // }
+    const token = await verifyPublicToken();
+    if (!token) {
+      return NextResponse.json({
+        status: 401,
+        success: false,
+        message: "Invalid request",
+      });
+    }
     const data = await prisma.product.findMany();
     return NextResponse.json({ status: 200, success: true, data });
   } catch (error) {

@@ -1,7 +1,6 @@
 "use server";
 
 import jwt from "jsonwebtoken";
-import { unstable_noStore } from "next/cache";
 import { headers } from "next/headers";
 
 export const getPublicToken = () => {
@@ -17,17 +16,7 @@ export const getPublicToken = () => {
   return token;
 };
 
-async function getHeaderToken() {
-  const token = headers().get("Authorization")?.split(" ")[1];
-  return new Promise((resolve) =>
-    setTimeout(() => {
-      resolve(token);
-    }, 1000)
-  );
-}
-
 export async function verifyPublicToken() {
-  unstable_noStore();
   const headerList = headers();
   const token = headerList.get("Authorization")?.split(" ")[1];
   if (!token) {

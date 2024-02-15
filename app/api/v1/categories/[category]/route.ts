@@ -4,12 +4,18 @@ import prisma from "@/lib/db";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
-    // const token = await verifyPublicToken();
-    // if (!token) {
-    //   return NextResponse.json({ status: 401, message: "Invalid Request" });
-    // }
+    const token = await verifyPublicToken();
+    if (!token) {
+      return NextResponse.json({
+        status: 401,
+        success: false,
+        message: "Invalid request",
+      });
+    }
     const pathname = request.nextUrl.pathname;
     const params = pathname.split("/v1/categories/")[1];
 
