@@ -1,12 +1,11 @@
 import { getDataByCategory } from "@/app/actions/categories/categories";
 import { verifyPublicToken } from "@/app/actions/publicToken";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const token = request.headers.get("Authorization")?.split(" ")[1];
-    // const newToken = token?.replace("bearer ", "");
-    if (!token || !verifyPublicToken(token)) {
+    const token = await verifyPublicToken();
+    if (!token) {
       return NextResponse.json({ status: 401, message: "Invalid Request" });
     }
     const { pathname } = new URL(request.url);
