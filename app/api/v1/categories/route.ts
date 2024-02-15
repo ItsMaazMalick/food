@@ -1,10 +1,11 @@
-import { verifyPublicToken } from "@/app/actions/publicToken";
 import prisma from "@/lib/db";
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const token = await verifyPublicToken();
+    const headerList = headers();
+    const token = headerList.get("Authorization")?.split(" ")[1];
     if (!token) {
       return NextResponse.json({ status: 401, message: "Invalid Request" });
     }

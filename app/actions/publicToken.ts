@@ -26,11 +26,11 @@ async function getHeaderToken() {
 }
 
 export async function verifyPublicToken() {
-  const token: any = await getHeaderToken();
+  const headerList = headers();
+  const token = headerList.get("Authorization")?.split(" ")[1];
   if (!token) {
     return null;
   }
-  console.log(token);
   const decodedToken = jwt.decode(token);
   if (!decodedToken) {
     return null;
