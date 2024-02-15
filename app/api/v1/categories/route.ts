@@ -5,7 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const token = headers().get("Authorization")?.split(" ")[1];
+    const headerList = new Headers(request.headers);
+    const token = headerList.get("Authorization")?.split(" ")[1];
     if (!token || !verifyPublicToken(token)) {
       return NextResponse.json({ status: 401, message: "Invalid Request" });
     }
