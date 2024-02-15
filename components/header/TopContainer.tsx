@@ -5,6 +5,7 @@ import { navLinks } from "@/constants/navlinks";
 import Link from "next/link";
 import AdminLogoutForm from "../forms/AdminLogoutForm";
 import MobileMenuLinks from "../sidebar/MobileMenuLinks";
+import { Button } from "../ui/button";
 
 export default function TopContainer({
   title,
@@ -20,8 +21,17 @@ export default function TopContainer({
         <DropdownComponent button={<Menu />}>
           <MobileMenuLinks />
           <DropdownMenuItem>
-            <div className="w-full">
-              <AdminLogoutForm />
+            <div className="w-full flex flex-col gap-2">
+              <div className="w-full">
+                <Link href={"admin/dashboard/edit-profile"}>
+                  <Button variant={"outline"} className="w-full">
+                    Edit Profile
+                  </Button>
+                </Link>
+              </div>
+              <div className="w-full">
+                <AdminLogoutForm />
+              </div>
             </div>
           </DropdownMenuItem>
         </DropdownComponent>

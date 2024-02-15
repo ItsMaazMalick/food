@@ -3,9 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import AdminLogoutForm from "../forms/AdminLogoutForm";
 import SidebarLinks from "./SidebarLinks";
+import { Button } from "../ui/button";
 
 export default async function Sidebar() {
-  const { name } = await getAdminSession();
+  const { name, image, id } = await getAdminSession();
   return (
     <div className="bg-white sm:w-[150px] md:w-[200px] min-h-screen z-50 sticky top-0 shadow-xl">
       <div className="w-full h-screen flex flex-col justify-between">
@@ -19,13 +20,14 @@ export default async function Sidebar() {
         </div>
         {/* USER */}
         <div className="w-full p-2 flex gap-2 items-center mb-4">
-          <Image
-            className="rounded-full"
-            src={"/images/no-avatar.png"}
-            alt="ABC"
-            width={40}
-            height={40}
-          />
+          <div className="relative w-[40px] h-[40px]">
+            <Image
+              className="rounded-full object-center"
+              src={image ? image : "/images/no-avatar.png"}
+              alt="ABC"
+              fill
+            />
+          </div>
           <div className="flex flex-col -space-y-1">
             <h2 className="font-bold text-secondary text-xs sm:text-base">
               {name}
@@ -34,6 +36,13 @@ export default async function Sidebar() {
           </div>
         </div>
         <SidebarLinks />
+        <div className="px-2">
+          <Link href={`/admin/dashboard/edit-profile/${id}`}>
+            <Button variant={"outline"} className="w-full">
+              Edit Profile
+            </Button>
+          </Link>
+        </div>
         <div className="p-2">
           <AdminLogoutForm />
         </div>

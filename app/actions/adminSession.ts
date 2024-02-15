@@ -37,6 +37,7 @@ export const getAdminSession = async () => {
       id: admin.id,
       name: admin.name,
       email: admin.email,
+      image: admin.image,
     };
   } catch (error) {
     return { status: 500, success: false, message: "Internal server error" };

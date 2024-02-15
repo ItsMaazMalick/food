@@ -10,6 +10,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { deleteCookie } from "../deleteCookie";
+import { deleteImage, uploadImage } from "@/lib/handleImage";
 
 // ADMIN LOGIN
 export async function adminLogin(formData: FormData) {
@@ -141,4 +142,48 @@ export async function getAdmin(token: string) {
     return deleteCookie();
   }
   return admin;
+}
+
+export async function updateAdmin(formData: FormData) {
+  const name = String(formData.get("name"));
+  const email = String(formData.get("email"));
+  let imageUrl = String(formData.get("imageUrl"));
+  const file = formData.get("image") as unknown as File;
+  const id = String(formData.get("id"));
+  if (!id || !name || !email) {
+    return {
+      status: 401,
+      success: false,
+      message: "All fields are required",
+    };
+  }
+
+  const admin = await prisma.admin.findUnique({ where: { id } });
+  if (!admin) {
+    return {
+      status: 401,
+      success: false,
+      message: "No record found",
+      // errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  if (file.name) {
+    const { image, error } = await uploadImage(file);
+    await deleteImage(imageUrl);
+    if (error) {
+      return error;
+    }
+    imageUrl = image;
+  }
+  console.log("Hello");
+  await prisma.admin.update({
+    where: { id },
+    data: {
+      name,
+      email,
+      image: imageUrl,
+    },
+  });
+  redirect("/admin/dashboard");
 }
