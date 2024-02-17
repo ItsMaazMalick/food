@@ -23,8 +23,8 @@ export default async function Sidebar() {
           <div className="relative w-[40px] h-[40px]">
             <Image
               className="rounded-full object-center"
-              src={image ? image : "/images/no-avatar.png"}
-              alt="ABC"
+              src={image || "/images/no-avatar.png"}
+              alt={name || "Gyro's N More"}
               fill
             />
           </div>
