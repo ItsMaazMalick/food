@@ -114,8 +114,6 @@ export async function adminRegister(formData: FormData) {
       name,
       email,
       password: hashPassword,
-      image:
-        "https://ytaxhdbtcofsuc9z.public.blob.vercel-storage.com/2048 x 2048-5B9LLLzbKEKXbRkTcoxxJfM50UuHfA.jpg",
     },
   });
   redirect("/admin/auth/login?register=true");
