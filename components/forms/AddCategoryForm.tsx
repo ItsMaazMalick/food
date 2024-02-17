@@ -10,11 +10,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import Link from "next/link";
+import { UploadButton } from "@/utils/uploadthing";
 
 const formSchema = categorySchema;
 
 export default function AddCategoryForm() {
-  const [image, setImage] = useState<File | null>(null);
+  const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -27,69 +29,59 @@ export default function AddCategoryForm() {
     setError("");
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("image", image as File);
-    setImage(null);
+    formData.append("image", image);
     const result = await createCategory(formData);
-    form.reset();
+    setImage("");
     form.reset();
     if (result) {
       setError(result?.message);
     }
   }
 
-  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  };
-
   return (
-    <div className="w-full grid grid-cols-1 p-2 bg-white rounded-md">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-4">
-            {/* <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="shadcn"
-                      {...field}
-                      defaultValue={field.value}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="flex flex-col w-full gap-4 lg:flex-row">
+          <div className="w-full lg:w-1/2">
             <TextInput
               label="Category Name"
               name="name"
               control={form.control}
             />
-            <div>
-              <div className="mb-2">
-                <Label htmlFor="image">Image</Label>
-              </div>
-              <Input
-                id="image"
-                accept="image/*"
-                type="file"
-                onChange={handleFile}
+          </div>
+          {image ? (
+            <Link
+              href={image}
+              target="_blank"
+              className="text-secondary-foreground bg-secondary w-full lg:w-[50%] rounded-md h-10 mt-8 flex justify-center items-center"
+            >
+              File Uploaded
+            </Link>
+          ) : (
+            <div className="text-black bg-primary w-full lg:w-1/2 rounded-md h-10 flex justify-center items-center mt-8">
+              <UploadButton
+                className="mt-4"
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  setImage(res[0].url);
+                }}
+                onUploadError={(error: Error) => {
+                  alert(`ERROR! ${error.message}`);
+                  setImage("");
+                }}
               />
             </div>
-          </div>
-          {error && (
-            <div className="my-2 text-center text-destructive font-bold text-sm">
-              {error}
-            </div>
           )}
+        </div>
+        {error && (
+          <div className="my-2 text-center text-destructive font-bold text-sm">
+            {error}
+          </div>
+        )}
+        <div className="mt-4">
           <FormSubmitButton title="Add" loading={form.formState.isSubmitting} />
-        </form>
-      </Form>
-    </div>
+        </div>
+      </form>
+    </Form>
   );
 }

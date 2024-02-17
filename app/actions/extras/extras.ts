@@ -25,12 +25,15 @@ export async function createExtras(formData: FormData) {
     };
   }
   const { name, price } = validatedFields.data;
-  const file = formData.get("image") as unknown as File;
+  const image = String(formData.get("image"));
 
-  const { image, error } = await uploadImage(file);
-
-  if (error) {
-    return error;
+  if (!image) {
+    return {
+      status: 401,
+      success: false,
+      message: "Image is required",
+      // errors: validatedFields.error.flatten().fieldErrors,
+    };
   }
 
   const extras = await prisma.extras.create({
@@ -158,16 +161,13 @@ export async function updateExtras(formData: FormData) {
     };
   }
   const { name, price } = validatedFields.data;
-  const file = formData.get("image") as unknown as File;
+  const image = String(formData.get("image"));
   let imageUrl = String(formData.get("imageUrl"));
-  if (file.name) {
-    const { image, error } = await uploadImage(file);
-    await deleteImage(imageUrl);
-    if (error) {
-      return error;
-    }
+
+  if (image) {
     imageUrl = image;
   }
+
   await prisma.extras.update({
     where: { id },
     data: {

@@ -15,7 +15,7 @@ export default function PieChart({
   const data = [
     ["Option", "Value", { role: "style" }],
     ["Categories", categoryLength, "#4bbfc8"], // RGB value
-    ["Items", itemsLength, "#1C66AA"], // English color name
+    ["Products", itemsLength, "#1C66AA"], // English color name
     ["Extras", extrasLength, "#f07400"],
     ["Total Orders", 10, "#CF2F68"], // CSS-style declaration
     ["Orders Completed", 9, "#8AA43A"], // CSS-style declaration

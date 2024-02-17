@@ -114,6 +114,8 @@ export async function adminRegister(formData: FormData) {
       name,
       email,
       password: hashPassword,
+      image:
+        "https://ytaxhdbtcofsuc9z.public.blob.vercel-storage.com/2048 x 2048-5B9LLLzbKEKXbRkTcoxxJfM50UuHfA.jpg",
     },
   });
   redirect("/admin/auth/login?register=true");
@@ -146,11 +148,10 @@ export async function getAdmin(token: string) {
 
 export async function updateAdmin(formData: FormData) {
   const name = String(formData.get("name"));
-  const email = String(formData.get("email"));
   let imageUrl = String(formData.get("imageUrl"));
-  const file = formData.get("image") as unknown as File;
+  const image = String(formData.get("image"));
   const id = String(formData.get("id"));
-  if (!id || !name || !email) {
+  if (!id || !name) {
     return {
       status: 401,
       success: false,
@@ -167,22 +168,11 @@ export async function updateAdmin(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-
-  if (file.name) {
-    const { image, error } = await uploadImage(file);
-    await deleteImage(imageUrl);
-    if (error) {
-      return error;
-    }
-    imageUrl = image;
-  }
-  console.log("Hello");
   await prisma.admin.update({
     where: { id },
     data: {
       name,
-      email,
-      image: imageUrl,
+      image: image ? image : imageUrl,
     },
   });
   redirect("/admin/dashboard");

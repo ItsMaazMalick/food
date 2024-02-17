@@ -33,12 +33,14 @@ export async function createCategory(formData: FormData) {
     };
   }
 
-  const file = formData.get("image") as unknown as File;
-
-  const { image, error } = await uploadImage(file);
-
-  if (error) {
-    return error;
+  const image = String(formData.get("image"));
+  if (!image) {
+    return {
+      status: 401,
+      success: false,
+      message: "Image is required",
+      // errors: validatedFields.error.flatten().fieldErrors,
+    };
   }
   const category = await prisma.category.create({
     data: {
@@ -140,14 +142,6 @@ export async function updateCategory(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  if (name === oldCategory.name) {
-    return {
-      status: 401,
-      success: false,
-      message: "Please change name",
-      // errors: validatedFields.error.flatten().fieldErrors,
-    };
-  }
   const slug = toSlug(name);
   const isCategory = await prisma.category.findUnique({
     where: { slug },
@@ -160,17 +154,11 @@ export async function updateCategory(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  const file = formData.get("image") as unknown as File;
+  const image = String(formData.get("image"));
   let imageUrl = String(formData.get("imageUrl"));
-  if (file.name) {
-    const { image, error } = await uploadImage(file);
-    await deleteImage(imageUrl);
-    if (error) {
-      return error;
-    }
+  if (image) {
     imageUrl = image;
   }
-
   const newCategory = await prisma.category.update({
     where: { id: categoryId },
     data: {

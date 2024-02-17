@@ -1,47 +1,18 @@
 "use client";
-import { createCategory } from "@/app/actions/categories/categories";
+import { updateAdmin } from "@/app/actions/admin/adminAuth";
 import TextInput from "@/components/Inputs/TextInput";
 import FormSubmitButton from "@/components/button/FormSubmitButton";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { categorySchema } from "@/lib/validations/categorySchema";
+import { Form } from "@/components/ui/form";
+import { UploadButton } from "@/utils/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChangeEvent, useState } from "react";
-import { useForm } from "react-hook-form";
-import { string, z } from "zod";
-import { Input } from "../ui/input";
-import SelectInput from "../Inputs/SelectInput";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import { Label } from "../ui/label";
-import MultiSelectInput from "../Inputs/MultiSelectInput";
-import DefaultValue from "../Inputs/DefaultValue";
-import { createProduct } from "@/app/actions/product/product";
-import { productSchema } from "@/lib/validations/itemValidation";
-import { adminRegisterSchema } from "@/lib/validations/adminValidation";
 import Image from "next/image";
-import { updateAdmin } from "@/app/actions/admin/adminAuth";
-
-const emailRegex = /^[^\s@]+@gmail.com$/;
+import Link from "next/link";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  email: z.string().refine((value) => emailRegex.test(value), {
-    message: "Invalid email address",
-  }),
 });
 
 type PageProps = {
@@ -49,7 +20,7 @@ type PageProps = {
 };
 
 export default function EditProfileForm({ admin }: PageProps) {
-  const [image, setImage] = useState<File | null>(null);
+  const [image, setImage] = useState("");
   const [selectedExtras, setSelectedExtras] = useState<string[]>();
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
@@ -64,7 +35,7 @@ export default function EditProfileForm({ admin }: PageProps) {
     const formData = new FormData();
     formData.append("name", values.name);
     // formData.append("email", values.email);
-    formData.append("image", image as File);
+    formData.append("image", image as string);
     formData.append("imageUrl", admin.image);
     formData.append("id", admin.id);
 
@@ -72,17 +43,12 @@ export default function EditProfileForm({ admin }: PageProps) {
     //   formData.append("extras", selectedExtras.join(","));
     // }
     const result = await updateAdmin(formData);
+    setImage("");
     form.reset();
     if (result) {
       setError(result?.message);
     }
   }
-
-  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  };
 
   return (
     <div className="w-full">
@@ -91,19 +57,31 @@ export default function EditProfileForm({ admin }: PageProps) {
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
               <TextInput label="Name" name="name" control={form.control} />
-              <div className="">
-                <div className="mb-2">
-                  <Label htmlFor="image">New Image</Label>
+              {image ? (
+                <Link
+                  href={image}
+                  target="_blank"
+                  className="text-secondary-foreground bg-secondary w-full lg:w-[50%] rounded-md h-10 mt-8 flex justify-center items-center"
+                >
+                  File Uploaded
+                </Link>
+              ) : (
+                <div className="w-full">
+                  <div className="text-black bg-primary rounded-md h-10 flex justify-center items-center mt-8">
+                    <UploadButton
+                      className="mt-4 text-xs"
+                      endpoint="imageUploader"
+                      onClientUploadComplete={(res) => {
+                        setImage(res[0].url);
+                      }}
+                      onUploadError={(error: Error) => {
+                        alert(`ERROR! ${error.message}`);
+                        setImage("");
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="col-span-3">
-                  <Input
-                    id="image"
-                    accept="image/*"
-                    type="file"
-                    onChange={handleFile}
-                  />
-                </div>
-              </div>
+              )}
               {admin.image && (
                 <div className="relative h-48">
                   <Image
@@ -121,10 +99,12 @@ export default function EditProfileForm({ admin }: PageProps) {
               {error}
             </div>
           )}
-          <FormSubmitButton
-            title="Update"
-            loading={form.formState.isSubmitting}
-          />
+          <div className="mt-4">
+            <FormSubmitButton
+              title="Update"
+              loading={form.formState.isSubmitting}
+            />
+          </div>
         </form>
       </Form>
     </div>

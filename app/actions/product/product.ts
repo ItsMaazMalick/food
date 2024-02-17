@@ -41,9 +41,9 @@ export async function createProduct(formData: FormData) {
   const extras = extrasString ? extrasString.split(",") : [];
   // console.log(extras);
 
-  const file = formData.get("image") as unknown as File;
+  const image = String(formData.get("image"));
 
-  if (!file.name) {
+  if (!image) {
     return {
       status: 401,
       success: false,
@@ -51,22 +51,6 @@ export async function createProduct(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-
-  if (file.size > 1000000) {
-    return {
-      status: 401,
-      success: false,
-      message: "Image size must be less than 1MB",
-      // errors: validatedFields.error.flatten().fieldErrors,
-    };
-  }
-
-  const { image, error } = await uploadImage(file);
-
-  if (error) {
-    return error;
-  }
-
   let product;
 
   if (!extrasString) {

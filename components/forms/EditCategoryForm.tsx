@@ -21,11 +21,13 @@ import { z } from "zod";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import Image from "next/image";
+import Link from "next/link";
+import { UploadButton } from "@/utils/uploadthing";
 
 const formSchema = categorySchema;
 
 export default function EditCategoryForm({ category }: any) {
-  const [image, setImage] = useState<File | null>(null);
+  const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,23 +41,16 @@ export default function EditCategoryForm({ category }: any) {
     const formData = new FormData();
     formData.append("name", values.name);
     formData.append("categoryId", category.id);
-    formData.append("image", image as File);
+    formData.append("image", image);
     formData.append("imageUrl", category.image);
 
-    setImage(null);
     const result = await updateCategory(formData);
+    setImage("");
     form.reset();
     if (result) {
       setError(result?.message);
     }
   }
-
-  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  };
-
   return (
     <div className="w-full grid grid-cols-1 p-2 bg-white rounded-md">
       <Form {...form}>
@@ -74,26 +69,38 @@ export default function EditCategoryForm({ category }: any) {
                 </FormItem>
               )}
             />
-            <div className="col-span-3">
-              <div className="mb-2">
-                <Label htmlFor="image">New Image</Label>
+            {image ? (
+              <Link
+                href={image}
+                target="_blank"
+                className="text-secondary-foreground bg-secondary w-full lg:w-[50%] rounded-md h-10 mt-8 flex justify-center items-center"
+              >
+                File Uploaded
+              </Link>
+            ) : (
+              <div className="w-full">
+                <div className="text-black bg-primary rounded-md h-10 flex justify-center items-center mt-8">
+                  <UploadButton
+                    className="mt-4 text-xs"
+                    endpoint="imageUploader"
+                    onClientUploadComplete={(res) => {
+                      setImage(res[0].url);
+                    }}
+                    onUploadError={(error: Error) => {
+                      alert(`ERROR! ${error.message}`);
+                      setImage("");
+                    }}
+                  />
+                </div>
               </div>
-              <div className="col-span-3">
-                <Input
-                  id="image"
-                  accept="image/*"
-                  type="file"
-                  onChange={handleFile}
-                />
-              </div>
-              <div className="col-span-3 relative w-[100%] h-56 md:h-64 lg:h-40">
-                <Image
-                  src={category.image}
-                  alt={category.name}
-                  fill
-                  className="object-center border-2 border-primary p-2 rounded-md"
-                />
-              </div>
+            )}
+            <div className="col-span-3 relative w-[100%] h-56 md:h-64 lg:h-40">
+              <Image
+                src={category.image}
+                alt={category.name}
+                fill
+                className="object-center border-2 border-primary p-2 rounded-md"
+              />
             </div>
           </div>
           {error && (

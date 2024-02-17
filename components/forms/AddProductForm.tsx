@@ -30,6 +30,8 @@ import {
 import { Label } from "../ui/label";
 import MultiSelectInput from "../Inputs/MultiSelectInput";
 import { createProduct } from "@/app/actions/product/product";
+import Link from "next/link";
+import { UploadButton } from "@/utils/uploadthing";
 
 const formSchema = productSchema;
 
@@ -39,7 +41,7 @@ type PageProps = {
 };
 
 export default function AddProductForm({ categories, extras }: PageProps) {
-  const [image, setImage] = useState<File | null>(null);
+  const [image, setImage] = useState("");
   const [selectedExtras, setSelectedExtras] = useState<string[]>();
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
@@ -60,7 +62,7 @@ export default function AddProductForm({ categories, extras }: PageProps) {
     setError("");
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("image", image as File);
+    formData.append("image", image);
     formData.append("categoryId", values.categoryId);
     formData.append("inStock", String(values.inStock));
     formData.append("originalPrice", String(values.originalPrice));
@@ -72,7 +74,7 @@ export default function AddProductForm({ categories, extras }: PageProps) {
     //   formData.append("extras", selectedExtras.join(","));
     // }
     const result = await createProduct(formData);
-    form.reset();
+    setImage("");
     form.reset();
     if (result) {
       setError(result?.message);
@@ -81,12 +83,6 @@ export default function AddProductForm({ categories, extras }: PageProps) {
 
   const handleExtrasSelectionChange = (selectedIds: string[]) => {
     setSelectedExtras(selectedIds);
-  };
-
-  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
   };
 
   return (
@@ -103,17 +99,31 @@ export default function AddProductForm({ categories, extras }: PageProps) {
                 control={form.control}
                 items={categories}
               />
-              <div>
-                <div className="mb-2">
-                  <Label htmlFor="image">Image</Label>
+              {image ? (
+                <Link
+                  href={image}
+                  target="_blank"
+                  className="text-secondary-foreground bg-secondary w-full lg:w-[50%] rounded-md h-10 mt-8 flex justify-center items-center"
+                >
+                  File Uploaded
+                </Link>
+              ) : (
+                <div className="w-full">
+                  <div className="text-black bg-primary rounded-md h-10 flex justify-center items-center mt-7">
+                    <UploadButton
+                      className="mt-4 text-xs"
+                      endpoint="imageUploader"
+                      onClientUploadComplete={(res) => {
+                        setImage(res[0].url);
+                      }}
+                      onUploadError={(error: Error) => {
+                        alert(`ERROR! ${error.message}`);
+                        setImage("");
+                      }}
+                    />
+                  </div>
                 </div>
-                <Input
-                  id="image"
-                  accept="image/*"
-                  type="file"
-                  onChange={handleFile}
-                />
-              </div>
+              )}
               <TextInput
                 label="In Stock"
                 name="inStock"
