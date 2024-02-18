@@ -9,11 +9,11 @@ export default function UploadButtonComponent({ image, setImage }: any) {
   return (
     <>
       {progress ? (
-        <div className="text-secondary-foreground bg-secondary rounded-md h-10 flex justify-center items-center mt-8 text-xs">
+        <div className="text-secondary-foreground bg-secondary rounded-md h-10 flex justify-center items-center text-xs">
           <Loader2 size={16} className="animate-spin mr-1" /> Uploading
         </div>
       ) : (
-        <div className="w-full bg-primary text-black h-10 mt-8 rounded-md text-xs">
+        <div className="w-full bg-primary text-black h-10 rounded-md text-xs">
           {image ? (
             <Link
               href={image}

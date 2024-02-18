@@ -58,7 +58,9 @@ export default function EditProfileForm({ admin }: PageProps) {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
               <TextInput label="Name" name="name" control={form.control} />
-              <UploadButtonComponent image={image} setImage={setImage} />
+              <div className="mt-8">
+                <UploadButtonComponent image={image} setImage={setImage} />
+              </div>
               {admin.image && (
                 <div className="relative h-48">
                   <Image

@@ -59,7 +59,9 @@ export default function EditCategoryForm({ category }: any) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
             <TextInput label="Category" name="name" control={form.control} />
 
-            <UploadButtonComponent image={image} setImage={setImage} />
+            <div className="mt-8">
+              <UploadButtonComponent image={image} setImage={setImage} />
+            </div>
             <div className="relative w-[100%] h-56 md:h-64 lg:h-40">
               <Image
                 src={category.image}

@@ -99,7 +99,7 @@ export default function AddProductForm({ categories, extras }: PageProps) {
                 control={form.control}
                 items={categories}
               />
-              <div className="-mt-1">
+              <div className="mt-7">
                 <UploadButtonComponent image={image} setImage={setImage} />
               </div>
               <TextInput
