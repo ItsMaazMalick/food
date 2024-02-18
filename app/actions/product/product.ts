@@ -152,14 +152,7 @@ export async function deleteProcuct({
       message: "No record found",
     };
   }
-  const { error } = await deleteImage(product.image);
-  if (error) {
-    return {
-      status: 401,
-      success: false,
-      message: "Error deleting image",
-    };
-  }
+
   await prisma.product.delete({
     where: { id },
   });

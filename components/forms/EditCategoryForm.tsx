@@ -23,6 +23,7 @@ import { Label } from "../ui/label";
 import Image from "next/image";
 import Link from "next/link";
 import { UploadButton } from "@/utils/uploadthing";
+import UploadButtonComponent from "@/utils/UploadButtonComponent";
 
 const formSchema = categorySchema;
 
@@ -52,49 +53,14 @@ export default function EditCategoryForm({ category }: any) {
     }
   }
   return (
-    <div className="w-full grid grid-cols-1 p-2 bg-white rounded-md">
+    <div className="w-full">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Category Name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            {image ? (
-              <Link
-                href={image}
-                target="_blank"
-                className="text-secondary-foreground bg-secondary w-full lg:w-[50%] rounded-md h-10 mt-8 flex justify-center items-center"
-              >
-                File Uploaded
-              </Link>
-            ) : (
-              <div className="w-full">
-                <div className="text-black bg-primary rounded-md h-10 flex justify-center items-center mt-8">
-                  <UploadButton
-                    className="mt-4 text-xs"
-                    endpoint="imageUploader"
-                    onClientUploadComplete={(res) => {
-                      setImage(res[0].url);
-                    }}
-                    onUploadError={(error: Error) => {
-                      alert(`ERROR! ${error.message}`);
-                      setImage("");
-                    }}
-                  />
-                </div>
-              </div>
-            )}
-            <div className="col-span-3 relative w-[100%] h-56 md:h-64 lg:h-40">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
+            <TextInput label="Category" name="name" control={form.control} />
+
+            <UploadButtonComponent image={image} setImage={setImage} />
+            <div className="relative w-[100%] h-56 md:h-64 lg:h-40">
               <Image
                 src={category.image}
                 alt={category.name}

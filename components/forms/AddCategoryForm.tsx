@@ -11,7 +11,8 @@ import { z } from "zod";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import Link from "next/link";
-import { UploadButton } from "@/utils/uploadthing";
+import { UploadButton, UploadDropzone } from "@/utils/uploadthing";
+import UploadButtonComponent from "@/utils/UploadButtonComponent";
 
 const formSchema = categorySchema;
 
@@ -49,36 +50,16 @@ export default function AddCategoryForm() {
               control={form.control}
             />
           </div>
-          {image ? (
-            <Link
-              href={image}
-              target="_blank"
-              className="text-secondary-foreground bg-secondary w-full lg:w-[50%] rounded-md h-10 mt-8 flex justify-center items-center"
-            >
-              File Uploaded
-            </Link>
-          ) : (
-            <div className="text-black bg-primary w-full lg:w-1/2 rounded-md h-10 flex justify-center items-center mt-8">
-              <UploadButton
-                className="mt-4"
-                endpoint="imageUploader"
-                onClientUploadComplete={(res) => {
-                  setImage(res[0].url);
-                }}
-                onUploadError={(error: Error) => {
-                  alert(`ERROR! ${error.message}`);
-                  setImage("");
-                }}
-              />
-            </div>
-          )}
+          <div className="w-full lg:w-1/2">
+            <UploadButtonComponent image={image} setImage={setImage} />
+          </div>
         </div>
         {error && (
           <div className="my-2 text-center text-destructive font-bold text-sm">
             {error}
           </div>
         )}
-        <div className="mt-4">
+        <div>
           <FormSubmitButton title="Add" loading={form.formState.isSubmitting} />
         </div>
       </form>

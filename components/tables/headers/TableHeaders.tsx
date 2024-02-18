@@ -41,7 +41,11 @@ export const CategoriesHeader: ColumnDef<any>[] = [
   {
     accessorKey: "items",
     header: "Items",
-    cell: ({ row }) => <div>{row?.original?.items?.length}</div>,
+    cell: ({ row }) => (
+      <div className="text-primary font-bold">
+        {row?.original?.items?.length}
+      </div>
+    ),
   },
   {
     accessorKey: "actions",
@@ -102,12 +106,22 @@ export const ItemsHeader: ColumnDef<any>[] = [
   {
     accessorKey: "originalPrice",
     header: "Original Price",
-    cell: ({ row }) => <div>{row.getValue("originalPrice")}</div>,
+    cell: ({ row }) => (
+      <div className="font-bold">
+        <span className="text-primary">$</span>
+        {row.getValue("originalPrice")}
+      </div>
+    ),
   },
   {
     accessorKey: "salePrice",
     header: "Sale Price",
-    cell: ({ row }) => <div>{row.getValue("salePrice")}</div>,
+    cell: ({ row }) => (
+      <div className="font-bold">
+        <span className="text-primary">$</span>
+        {row.getValue("salePrice")}
+      </div>
+    ),
   },
   {
     accessorKey: "isRecommended",
@@ -116,11 +130,11 @@ export const ItemsHeader: ColumnDef<any>[] = [
       <div>{row.getValue("isRecommended") ? "TRUE" : "FALSE"}</div>
     ),
   },
-  {
-    accessorKey: "featured",
-    header: "Featured",
-    cell: ({ row }) => <div>{row.getValue("featured") ? "TRUE" : "FALSE"}</div>,
-  },
+  // {
+  //   accessorKey: "featured",
+  //   header: "Featured",
+  //   cell: ({ row }) => <div>{row.getValue("featured") ? "TRUE" : "FALSE"}</div>,
+  // },
   {
     accessorKey: "actions",
     header: ({ column }) => <div className="text-end">Action</div>,
@@ -174,7 +188,12 @@ export const ExtrasHeader: ColumnDef<any>[] = [
   {
     accessorKey: "price",
     header: "Price",
-    cell: ({ row }) => <div>{row.getValue("price")}</div>,
+    cell: ({ row }) => (
+      <div className="font-bold">
+        <span className="text-primary">$</span>
+        {row.getValue("price")}
+      </div>
+    ),
   },
   {
     accessorKey: "actions",

@@ -36,7 +36,7 @@ export default async function AdminDashboard() {
           icon={<Boxes />}
           length={categories.length}
         />
-        <TopCard title="Items" icon={<Salad />} length={products.length} />
+        <TopCard title="Products" icon={<Salad />} length={products.length} />
         <TopCard
           title="Completed"
           icon={<ListChecks />}
@@ -53,35 +53,37 @@ export default async function AdminDashboard() {
           length={categories.length}
         />
       </div>
-      <div className="w-full sm:w-[calc(100vw-170px)] md:w-[calc(100vw-240px)] max-h-[400px] overflow-y-auto overflow-x-auto">
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-12 h-[350px] gap-4">
-          <div className=" bg-white col-span-12 lg:col-span-8 shadow-md rounded-md">
-            {/* <p className="p-2 text-xl font-bold text-primary">Calculations</p> */}
-            <PieChart
-              categoryLength={categories.length}
-              itemsLength={products.length}
-              extrasLength={extras.length}
+      <div className="mt-4 grid grid-cols-1 md:grid-cols-12 h-[350px] gap-4">
+        <div className=" bg-white col-span-12 lg:col-span-8 shadow-md rounded-md">
+          {/* <p className="p-2 text-xl font-bold text-primary">Calculations</p> */}
+          <PieChart
+            categoryLength={categories.length}
+            itemsLength={products.length}
+            extrasLength={extras.length}
+          />
+        </div>
+        <div className="hidden lg:col-span-4 bg-white rounded-md shadow-md lg:flex justify-center items-center">
+          <div className="relative w-[100%] h-full">
+            <Image
+              src={"/images/logo.jpeg"}
+              alt="Gyro's N More"
+              fill
+              className="object-center"
             />
           </div>
-          <div className="hidden lg:col-span-4 bg-white rounded-md shadow-md lg:flex justify-center items-center">
-            <div className="relative w-[100%] h-full">
-              <Image
-                src={"/images/logo.jpeg"}
-                alt="Gyro's N More"
-                fill
-                className="object-center"
-              />
-            </div>
-          </div>
         </div>
-        <div className="mt-4 bg-white">
-          <p className="p-2 text-xl font-bold text-primary">Categories</p>
-          <AdminDataTable index={1} data={categories} />
-        </div>
-        <div className="mt-4 bg-white">
-          <p className="p-2 text-xl font-bold text-primary">Items</p>
-          <AdminDataTable index={2} data={products} />
-        </div>
+      </div>
+      <div className="mt-4 bg-white">
+        <p className="p-2 text-xl font-bold text-primary">Categories</p>
+        <AdminDataTable index={1} data={categories} />
+      </div>
+      <div className="mt-4 bg-white">
+        <p className="p-2 text-xl font-bold text-primary">Products</p>
+        <AdminDataTable index={2} data={products} />
+      </div>
+      <div className="mt-4 bg-white">
+        <p className="p-2 text-xl font-bold text-primary">Extras</p>
+        <AdminDataTable index={3} data={extras} />
       </div>
     </div>
   );

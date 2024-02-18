@@ -3,6 +3,7 @@ import { updateAdmin } from "@/app/actions/admin/adminAuth";
 import TextInput from "@/components/Inputs/TextInput";
 import FormSubmitButton from "@/components/button/FormSubmitButton";
 import { Form } from "@/components/ui/form";
+import UploadButtonComponent from "@/utils/UploadButtonComponent";
 import { UploadButton } from "@/utils/uploadthing";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
@@ -55,33 +56,9 @@ export default function EditProfileForm({ admin }: PageProps) {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
               <TextInput label="Name" name="name" control={form.control} />
-              {image ? (
-                <Link
-                  href={image}
-                  target="_blank"
-                  className="text-secondary-foreground bg-secondary w-full lg:w-[50%] rounded-md h-10 mt-8 flex justify-center items-center"
-                >
-                  File Uploaded
-                </Link>
-              ) : (
-                <div className="w-full">
-                  <div className="text-black bg-primary rounded-md h-10 flex justify-center items-center mt-8">
-                    <UploadButton
-                      className="mt-4 text-xs"
-                      endpoint="imageUploader"
-                      onClientUploadComplete={(res) => {
-                        setImage(res[0].url);
-                      }}
-                      onUploadError={(error: Error) => {
-                        alert(`ERROR! ${error.message}`);
-                        setImage("");
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
+              <UploadButtonComponent image={image} setImage={setImage} />
               {admin.image && (
                 <div className="relative h-48">
                   <Image

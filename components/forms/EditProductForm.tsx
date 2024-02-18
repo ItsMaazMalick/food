@@ -33,6 +33,7 @@ import { createProduct } from "@/app/actions/product/product";
 import { productSchema } from "@/lib/validations/itemValidation";
 import Link from "next/link";
 import { UploadButton } from "@/utils/uploadthing";
+import UploadButtonComponent from "@/utils/UploadButtonComponent";
 
 const formSchema = productSchema;
 
@@ -94,7 +95,7 @@ export default function EditProductForm({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
               <TextInput label="Item Name" name="name" control={form.control} />
               {/* <DefaultValue data={extras} id={product.extras} /> */}
               <SelectInput
@@ -103,31 +104,7 @@ export default function EditProductForm({
                 control={form.control}
                 items={categories}
               />
-              {image ? (
-                <Link
-                  href={image}
-                  target="_blank"
-                  className="text-secondary-foreground bg-secondary w-full lg:w-[50%] rounded-md h-10 mt-8 flex justify-center items-center"
-                >
-                  File Uploaded
-                </Link>
-              ) : (
-                <div className="w-full">
-                  <div className="text-black bg-primary rounded-md h-10 flex justify-center items-center mt-8">
-                    <UploadButton
-                      className="mt-4 text-xs"
-                      endpoint="imageUploader"
-                      onClientUploadComplete={(res) => {
-                        setImage(res[0].url);
-                      }}
-                      onUploadError={(error: Error) => {
-                        alert(`ERROR! ${error.message}`);
-                        setImage("");
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
+              <UploadButtonComponent image={image} setImage={setImage} />
               <TextInput
                 label="In Stock"
                 name="inStock"

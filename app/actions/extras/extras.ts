@@ -63,14 +63,6 @@ export async function deleteExtras({ id, path }: { id: string; path: string }) {
       message: "No record found",
     };
   }
-  const { error } = await deleteImage(extras.image);
-  if (error) {
-    return {
-      status: 401,
-      success: false,
-      message: "Error deleting image",
-    };
-  }
 
   // TODO:
 
@@ -105,7 +97,7 @@ export async function deleteExtras({ id, path }: { id: string; path: string }) {
   await prisma.extras.delete({
     where: { id },
   });
-
+  console.log("HELOO");
   revalidatePath(path);
 }
 
