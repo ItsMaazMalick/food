@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         status: 401,
         success: false,
-        message: "All fields are required.",
+        message: "All fields are required",
       });
     }
     const response = await sendOTP({ name, email });
