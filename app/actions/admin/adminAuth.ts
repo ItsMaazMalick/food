@@ -175,3 +175,13 @@ export async function updateAdmin(formData: FormData) {
   });
   redirect("/admin/dashboard");
 }
+
+export async function getAdminByEmail(email: string) {
+  const admin = await prisma.admin.findUnique({
+    where: { email },
+  });
+  if (!admin) {
+    return null;
+  }
+  return admin;
+}

@@ -150,3 +150,13 @@ export async function registerUser({
     message: "Account Registration Success",
   };
 }
+
+export async function getUserByEmail(email: string) {
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+  if (!user) {
+    return null;
+  }
+  return user;
+}

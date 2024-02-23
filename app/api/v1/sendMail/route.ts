@@ -1,4 +1,5 @@
 import { verifyPublicToken } from "@/app/actions/publicToken";
+import { getUserByEmail } from "@/app/actions/user/auth";
 import { sendOTP } from "@/utils/sendOTP";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -21,6 +22,14 @@ export async function POST(request: NextRequest) {
         status: 401,
         success: false,
         message: "All fields are required",
+      });
+    }
+    const user = await getUserByEmail(email);
+    if (user) {
+      return NextResponse.json({
+        status: 401,
+        success: false,
+        message: "User already exists",
       });
     }
     const response = await sendOTP({ name, email });
