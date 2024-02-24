@@ -22,7 +22,7 @@ model Category {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   slug      String    @unique
-  image     String
+  image     Bytes
   items     Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 export async function createCategory(formData: FormData) {
   const validatedFields = categorySchema.safeParse({
     name: String(formData.get("name")),
+    image: formData.get("image") as File,
   });
   if (!validatedFields.success) {
     return {
@@ -33,20 +34,22 @@ export async function createCategory(formData: FormData) {
     };
   }
 
-  const image = String(formData.get("image"));
-  if (!image) {
-    return {
-      status: 401,
-      success: false,
-      message: "Image is required",
-      // errors: validatedFields.error.flatten().fieldErrors,
-    };
-  }
+  const image = formData.get("image") as File;
+  const bytes = await image.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  // if (!image) {
+  //   return {
+  //     status: 401,
+  //     success: false,
+  //     message: "Image is required",
+  //     // errors: validatedFields.error.flatten().fieldErrors,
+  //   };
+  // }
   const category = await prisma.category.create({
     data: {
       name,
       slug,
-      image,
+      image: buffer,
     },
   });
   if (!category) {
@@ -76,7 +79,13 @@ export async function getDataByCategory(category: string) {
         items: true,
       },
     });
-    return data;
+    // Convert the image buffer to a base64 string
+    const newData = data.map((category) => ({
+      ...category,
+      image: category.image.toString("base64"),
+    }));
+
+    return newData;
   } else {
     const data = await prisma.category.findMany({
       where: { slug: category },
@@ -154,17 +163,21 @@ export async function updateCategory(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  const image = String(formData.get("image"));
-  let imageUrl = String(formData.get("imageUrl"));
-  if (image) {
-    imageUrl = image;
-  }
+
+  const image = formData.get("image") as File;
+  const bytes = await image.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+
+  // let imageUrl = String(formData.get("imageUrl"));
+  // if (image) {
+  //   imageUrl = image;
+  // }
   const newCategory = await prisma.category.update({
     where: { id: categoryId },
     data: {
       name,
       slug,
-      image: imageUrl,
+      image: buffer,
     },
   });
   if (!newCategory) {

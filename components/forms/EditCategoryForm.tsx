@@ -24,6 +24,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { UploadButton } from "@/utils/uploadthing";
 import UploadButtonComponent from "@/utils/UploadButtonComponent";
+import ImageInput from "../Inputs/ImageInput";
 
 const formSchema = categorySchema;
 
@@ -34,6 +35,7 @@ export default function EditCategoryForm({ category }: any) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: category.name,
+      image: undefined,
     },
   });
 
@@ -42,11 +44,11 @@ export default function EditCategoryForm({ category }: any) {
     const formData = new FormData();
     formData.append("name", values.name);
     formData.append("categoryId", category.id);
-    formData.append("image", image);
+    formData.append("image", values.image as File);
     formData.append("imageUrl", category.image);
 
     const result = await updateCategory(formData);
-    setImage("");
+    // setImage("");
     form.reset();
     if (result) {
       setError(result?.message);
@@ -59,9 +61,7 @@ export default function EditCategoryForm({ category }: any) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
             <TextInput label="Category" name="name" control={form.control} />
 
-            <div className="mt-8">
-              <UploadButtonComponent image={image} setImage={setImage} />
-            </div>
+            <ImageInput label="Image" name="image" control={form.control} />
             <div className="relative w-[100%] h-56 md:h-64 lg:h-40">
               <Image
                 src={category.image}

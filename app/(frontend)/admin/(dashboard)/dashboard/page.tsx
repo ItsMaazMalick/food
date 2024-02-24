@@ -19,7 +19,7 @@ import {
 import Image from "next/image";
 
 export default async function AdminDashboard() {
-  const categories = await getDataByCategory("all");
+  // const categories = await getDataByCategory("all");
   const products = await getAllProducts();
   const extras = await getAllExtras();
   return (
@@ -34,30 +34,35 @@ export default async function AdminDashboard() {
         <TopCard
           title="Categories"
           icon={<Boxes />}
-          length={categories.length}
+          // length={categories.length}
+          length={10}
         />
         <TopCard title="Products" icon={<Salad />} length={products.length} />
         <TopCard
           title="Completed"
           icon={<ListChecks />}
-          length={categories.length}
+          // length={categories.length}
+          length={10}
         />
         <TopCard
           title="Pending"
           icon={<LayoutList />}
-          length={categories.length}
+          // length={categories.length}
+          length={10}
         />
         <TopCard
           title="Revenue"
           icon={<DollarSign />}
-          length={categories.length}
+          // length={categories.length}
+          length={10}
         />
       </div>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-12 h-[350px] gap-4">
         <div className=" bg-white col-span-12 lg:col-span-8 shadow-md rounded-md">
           {/* <p className="p-2 text-xl font-bold text-primary">Calculations</p> */}
           <PieChart
-            categoryLength={categories.length}
+            // categoryLength={categories.length}
+            categoryLength={10}
             itemsLength={products.length}
             extrasLength={extras.length}
           />
@@ -75,7 +80,7 @@ export default async function AdminDashboard() {
       </div>
       <div className="mt-4 bg-white">
         <p className="p-2 text-xl font-bold text-primary">Categories</p>
-        <AdminDataTable index={1} data={categories} />
+        {/* <AdminDataTable index={1} data={categories} /> */}
       </div>
       <div className="mt-4 bg-white">
         <p className="p-2 text-xl font-bold text-primary">Products</p>

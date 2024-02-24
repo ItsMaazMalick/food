@@ -5,24 +5,20 @@ import FormSubmitButton from "@/components/button/FormSubmitButton";
 import { Form } from "@/components/ui/form";
 import { categorySchema } from "@/lib/validations/categorySchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import Link from "next/link";
-import { UploadButton, UploadDropzone } from "@/utils/uploadthing";
-import UploadButtonComponent from "@/utils/UploadButtonComponent";
+import ImageInput from "../Inputs/ImageInput";
 
 const formSchema = categorySchema;
 
 export default function AddCategoryForm() {
-  const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      image: undefined,
     },
   });
 
@@ -30,9 +26,9 @@ export default function AddCategoryForm() {
     setError("");
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("image", image);
+    formData.append("image", values.image as File);
     const result = await createCategory(formData);
-    setImage("");
+    // setImage("");
     form.reset();
     if (result) {
       setError(result?.message);
@@ -50,8 +46,8 @@ export default function AddCategoryForm() {
               control={form.control}
             />
           </div>
-          <div className="w-full lg:w-1/2 mt-8">
-            <UploadButtonComponent image={image} setImage={setImage} />
+          <div className="w-full lg:w-1/2">
+            <ImageInput label="Image" name="image" control={form.control} />
           </div>
         </div>
         {error && (
