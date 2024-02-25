@@ -9,7 +9,6 @@ import jwt from "jsonwebtoken";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { deleteCookie } from "../deleteCookie";
 import { deleteImage, uploadImage } from "@/lib/handleImage";
 import { convertToBase64 } from "@/utils/convertToBase64";
 import { decryptString, encryptString } from "@/utils/encryption";
@@ -127,30 +126,30 @@ export async function adminRegister(formData: FormData) {
 
 export async function getAdmin(token: string) {
   if (!token) {
-    return deleteCookie();
+    return null;
   }
 
   const decryptToken = await decryptString(token);
   if (!decryptToken) {
-    return deleteCookie();
+    return null;
   }
   const decodedToken = jwt.decode(decryptToken);
   if (!decodedToken) {
-    return deleteCookie();
+    return null;
   }
   const { tokenData }: any = decodedToken;
   if (!tokenData) {
-    return deleteCookie();
+    return null;
   }
   const id = tokenData.id;
   if (!id) {
-    return deleteCookie();
+    return null;
   }
   const admin = await prisma.admin.findUnique({
     where: { id },
   });
   if (!admin) {
-    return deleteCookie();
+    return null;
   }
   return admin;
 }

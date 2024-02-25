@@ -9,11 +9,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { Button } from "../ui/button";
 
 const formSchema = adminLoginSchema;
 
 export default function AdminLoginForm() {
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -24,13 +26,19 @@ export default function AdminLoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setSuccess("");
+    setError("");
     const formData = new FormData();
     formData.append("email", values.email);
     formData.append("password", values.password);
     const result = await adminLogin(formData);
     form.reset();
     if (result && !result.success) {
+      setSuccess("");
       setError(result.message);
+    } else {
+      setError("");
+      setSuccess("Redirecting to dashboard...");
     }
   }
   return (
@@ -38,6 +46,11 @@ export default function AdminLoginForm() {
       {error && (
         <div className="w-full mx-auto text-center text-destructive text-xs font-bold">
           <span>{error}</span>
+        </div>
+      )}
+      {success && (
+        <div className="w-full mx-auto text-center text-green-600 text-xs font-bold">
+          <span>{success}</span>
         </div>
       )}
       <Form {...form}>
@@ -62,7 +75,7 @@ export default function AdminLoginForm() {
             </Link>
             <FormSubmitButton
               title="Login"
-              loading={form.formState.isSubmitting}
+              loading={form.formState.isSubmitting || (success ? true : false)}
             />
           </div>
         </form>

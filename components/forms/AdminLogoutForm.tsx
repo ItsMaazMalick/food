@@ -6,6 +6,7 @@ export default function AdminLogoutForm() {
   const handleLogout = async () => {
     "use server";
     cookies()?.set("auth-token", "", { expires: new Date(0) });
+    cookies()?.set("user", "", { expires: new Date(0) });
     redirect("/admin/auth/login");
   };
   return (

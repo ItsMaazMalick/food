@@ -3,7 +3,6 @@ import BackButton from "@/components/button/BackButton";
 import AddCategoryForm from "@/components/forms/AddCategoryForm";
 import TopContainer from "@/components/header/TopContainer";
 import AdminDataTable from "@/components/tables/AdminDataTable";
-import Image from "next/image";
 
 export default async function Categories() {
   const categories = await getDataByCategory("all");
