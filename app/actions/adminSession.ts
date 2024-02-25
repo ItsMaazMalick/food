@@ -3,16 +3,20 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import prisma from "../../lib/db";
 import { deleteCookie } from "./deleteCookie";
+import { decryptString } from "@/utils/encryption";
 
-// * OK:  FIXED:  -> USER SESSION
+// * OK:  FIXED:  -> ADMIN SESSION
 export const getAdminSession = async () => {
   try {
     const cookieStore = cookies();
     const userCookie = cookieStore.get("auth-token")?.value;
-    if (!userCookie) {
+    const userId = cookieStore.get("user")?.value;
+    if (!userCookie || !userId) {
       return { status: 401, success: false, message: "Unauthorized" };
     }
-    const decodedToken = jwt.decode(userCookie);
+    const decryptToken = await decryptString(userCookie);
+    const decryptId = await decryptString(userId);
+    const decodedToken = jwt.decode(decryptToken);
     if (!decodedToken) {
       return { status: 401, success: false, message: "Unauthorized" };
     }
@@ -24,6 +28,11 @@ export const getAdminSession = async () => {
     if (!id) {
       return { status: 401, success: false, message: "Unauthorized" };
     }
+
+    if (id !== decryptId) {
+      return { status: 401, success: false, message: "Unauthorized" };
+    }
+
     const admin = await prisma.admin.findUnique({
       where: { id },
     });

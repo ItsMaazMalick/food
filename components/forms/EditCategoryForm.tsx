@@ -13,7 +13,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { categorySchema } from "@/lib/validations/categorySchema";
+import {
+  createCategorySchema,
+  updateCategorySchema,
+} from "@/lib/validations/categorySchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -26,10 +29,9 @@ import { UploadButton } from "@/utils/uploadthing";
 import UploadButtonComponent from "@/utils/UploadButtonComponent";
 import ImageInput from "../Inputs/ImageInput";
 
-const formSchema = categorySchema;
+const formSchema = createCategorySchema;
 
 export default function EditCategoryForm({ category }: any) {
-  const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -64,7 +66,7 @@ export default function EditCategoryForm({ category }: any) {
             <ImageInput label="Image" name="image" control={form.control} />
             <div className="relative w-[100%] h-56 md:h-64 lg:h-40">
               <Image
-                src={category.image}
+                src={`data:image/png;base64,${category.image}`}
                 alt={category.name}
                 fill
                 className="object-center border-2 border-primary p-2 rounded-md"

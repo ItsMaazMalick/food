@@ -10,8 +10,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { categorySchema } from "@/lib/validations/categorySchema";
-import { productSchema } from "@/lib/validations/itemValidation";
+import { productSchema } from "@/lib/validations/productSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -33,6 +32,7 @@ import { createProduct } from "@/app/actions/product/product";
 import Link from "next/link";
 import { UploadButton } from "@/utils/uploadthing";
 import UploadButtonComponent from "@/utils/UploadButtonComponent";
+import ImageInput from "../Inputs/ImageInput";
 
 const formSchema = productSchema;
 
@@ -42,13 +42,13 @@ type PageProps = {
 };
 
 export default function AddProductForm({ categories, extras }: PageProps) {
-  const [image, setImage] = useState("");
   const [selectedExtras, setSelectedExtras] = useState<string[]>();
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      image: undefined,
       categoryId: "",
       inStock: 0,
       originalPrice: 0,
@@ -63,7 +63,7 @@ export default function AddProductForm({ categories, extras }: PageProps) {
     setError("");
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("image", image);
+    formData.append("image", values.image as File);
     formData.append("categoryId", values.categoryId);
     formData.append("inStock", String(values.inStock));
     formData.append("originalPrice", String(values.originalPrice));
@@ -75,7 +75,6 @@ export default function AddProductForm({ categories, extras }: PageProps) {
     //   formData.append("extras", selectedExtras.join(","));
     // }
     const result = await createProduct(formData);
-    setImage("");
     form.reset();
     if (result) {
       setError(result?.message);
@@ -99,9 +98,7 @@ export default function AddProductForm({ categories, extras }: PageProps) {
                 control={form.control}
                 items={categories}
               />
-              <div className="mt-7">
-                <UploadButtonComponent image={image} setImage={setImage} />
-              </div>
+              <ImageInput label="Image" name="image" control={form.control} />
               <TextInput
                 label="In Stock"
                 name="inStock"

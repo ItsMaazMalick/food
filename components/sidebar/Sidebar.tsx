@@ -6,7 +6,8 @@ import SidebarLinks from "./SidebarLinks";
 import { Button } from "../ui/button";
 
 export default async function Sidebar() {
-  const { name, image, id } = await getAdminSession();
+  const { id, name, image } = await getAdminSession();
+  const imgSrc = image !== "null" ? image : "/images/logo.jpeg";
   return (
     <div className="bg-white sm:w-[150px] md:w-[200px] min-h-screen z-50 sticky top-0 shadow-xl">
       <div className="w-full h-screen flex flex-col justify-between">
@@ -23,7 +24,7 @@ export default async function Sidebar() {
           <div className="relative w-[40px] h-[40px]">
             <Image
               className="rounded-full object-center"
-              src={image || "/images/logo.jpeg"}
+              src={imgSrc!}
               alt={name || "Gyro's N More"}
               fill
             />

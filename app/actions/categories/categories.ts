@@ -1,13 +1,18 @@
 "use server";
 import prisma from "@/lib/db";
 import { deleteImage, uploadImage } from "@/lib/handleImage";
-import { categorySchema } from "@/lib/validations/categorySchema";
+import {
+  createCategorySchema,
+  updateCategorySchema,
+} from "@/lib/validations/categorySchema";
+
 import { toSlug } from "@/lib/validations/slug";
+import { convertToBase64 } from "@/utils/convertToBase64";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function createCategory(formData: FormData) {
-  const validatedFields = categorySchema.safeParse({
+  const validatedFields = createCategorySchema.safeParse({
     name: String(formData.get("name")),
     image: formData.get("image") as File,
   });
@@ -19,7 +24,7 @@ export async function createCategory(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  const { name } = validatedFields.data;
+  const { name, image } = validatedFields.data;
   const slug = toSlug(name);
   const oldCategory = await prisma.category.findUnique({
     where: { slug },
@@ -34,22 +39,13 @@ export async function createCategory(formData: FormData) {
     };
   }
 
-  const image = formData.get("image") as File;
-  const bytes = await image.arrayBuffer();
-  const buffer = Buffer.from(bytes);
-  // if (!image) {
-  //   return {
-  //     status: 401,
-  //     success: false,
-  //     message: "Image is required",
-  //     // errors: validatedFields.error.flatten().fieldErrors,
-  //   };
-  // }
+  const imageUrl = await convertToBase64(image);
+
   const category = await prisma.category.create({
     data: {
       name,
       slug,
-      image: buffer,
+      image: imageUrl!,
     },
   });
   if (!category) {
@@ -70,7 +66,7 @@ export async function createCategory(formData: FormData) {
 
 export async function getDataByCategory(category: string) {
   if (category === "all") {
-    const data = await prisma.category.findMany({
+    const category = await prisma.category.findMany({
       select: {
         id: true,
         name: true,
@@ -79,13 +75,8 @@ export async function getDataByCategory(category: string) {
         items: true,
       },
     });
-    // Convert the image buffer to a base64 string
-    const newData = data.map((category) => ({
-      ...category,
-      image: category.image.toString("base64"),
-    }));
 
-    return newData;
+    return category;
   } else {
     const data = await prisma.category.findMany({
       where: { slug: category },
@@ -131,8 +122,10 @@ export async function getSingleCategory(id: string) {
 export async function updateCategory(formData: FormData) {
   const categoryId = String(formData.get("categoryId"));
   const name = String(formData.get("name"));
-  const validatedFields = categorySchema.safeParse({ name });
+  const image = formData.get("image") as File;
+  const validatedFields = updateCategorySchema.safeParse({ name, image });
   if (!validatedFields.success || !categoryId) {
+    // console.log(validatedFields.error.flatten().fieldErrors);
     return {
       status: 401,
       success: false,
@@ -163,10 +156,7 @@ export async function updateCategory(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-
-  const image = formData.get("image") as File;
-  const bytes = await image.arrayBuffer();
-  const buffer = Buffer.from(bytes);
+  const imageUrl = await convertToBase64(image);
 
   // let imageUrl = String(formData.get("imageUrl"));
   // if (image) {
@@ -177,7 +167,7 @@ export async function updateCategory(formData: FormData) {
     data: {
       name,
       slug,
-      image: buffer,
+      image: imageUrl!,
     },
   });
   if (!newCategory) {

@@ -11,6 +11,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { deleteCookie } from "../deleteCookie";
 import { deleteImage, uploadImage } from "@/lib/handleImage";
+import { convertToBase64 } from "@/utils/convertToBase64";
+import { decryptString, encryptString } from "@/utils/encryption";
 
 // ADMIN LOGIN
 export async function adminLogin(formData: FormData) {
@@ -70,7 +72,10 @@ export async function adminLogin(formData: FormData) {
     process.env.JWT_SECRET!,
     { expiresIn: "1d" }
   );
-  cookies().set("auth-token", token);
+  const encryptToken = await encryptString(token);
+  const encryptId = await encryptString(admin.id);
+  cookies().set("auth-token", encryptToken);
+  cookies().set("user", encryptId);
   redirect("/admin/dashboard");
 }
 
@@ -114,6 +119,7 @@ export async function adminRegister(formData: FormData) {
       name,
       email,
       password: hashPassword,
+      image: "/images/logo.jpeg",
     },
   });
   redirect("/admin/auth/login?register=true");
@@ -123,7 +129,10 @@ export async function getAdmin(token: string) {
   if (!token) {
     return deleteCookie();
   }
-  const decodedToken = jwt.decode(token);
+
+  const decryptToken = await decryptString(token);
+
+  const decodedToken = jwt.decode(decryptToken);
   if (!decodedToken) {
     return deleteCookie();
   }
@@ -146,8 +155,7 @@ export async function getAdmin(token: string) {
 
 export async function updateAdmin(formData: FormData) {
   const name = String(formData.get("name"));
-  let imageUrl = String(formData.get("imageUrl"));
-  const image = String(formData.get("image"));
+  const image = formData.get("image") as File;
   const id = String(formData.get("id"));
   if (!id || !name) {
     return {
@@ -166,11 +174,19 @@ export async function updateAdmin(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
+
+  let imageUrl;
+  if (image && image.name) {
+    imageUrl = await convertToBase64(image);
+  } else {
+    imageUrl = String(formData.get("imageUrl"));
+  }
+
   await prisma.admin.update({
     where: { id },
     data: {
       name,
-      image: image ? image : imageUrl,
+      image: imageUrl,
     },
   });
   redirect("/admin/dashboard");

@@ -1,7 +1,8 @@
 "use server";
 import prisma from "@/lib/db";
 import { deleteImage, uploadImage } from "@/lib/handleImage";
-import { productSchema } from "@/lib/validations/itemValidation";
+import { productSchema } from "@/lib/validations/productSchema";
+import { convertToBase64 } from "@/utils/convertToBase64";
 import { revalidatePath } from "next/cache";
 
 export async function getAllProducts() {
@@ -12,6 +13,7 @@ export async function getAllProducts() {
 export async function createProduct(formData: FormData) {
   const validatedFields = productSchema.safeParse({
     name: String(formData.get("name")),
+    image: formData.get("image") as File,
     categoryId: String(formData.get("categoryId")),
     inStock: Number(formData.get("inStock")),
     originalPrice: Number(formData.get("originalPrice")),
@@ -30,6 +32,7 @@ export async function createProduct(formData: FormData) {
   }
   const {
     name,
+    image,
     categoryId,
     inStock,
     originalPrice,
@@ -41,23 +44,15 @@ export async function createProduct(formData: FormData) {
   const extras = extrasString ? extrasString.split(",") : [];
   // console.log(extras);
 
-  const image = String(formData.get("image"));
+  const imageUrl = await convertToBase64(image);
 
-  if (!image) {
-    return {
-      status: 401,
-      success: false,
-      message: "Image is required",
-      // errors: validatedFields.error.flatten().fieldErrors,
-    };
-  }
   let product;
 
   if (!extrasString) {
     product = await prisma.product.create({
       data: {
         name,
-        image,
+        image: imageUrl!,
         inStock,
         originalPrice,
         salePrice,
@@ -74,7 +69,7 @@ export async function createProduct(formData: FormData) {
     product = await prisma.product.create({
       data: {
         name,
-        image,
+        image: imageUrl!,
         inStock,
         originalPrice,
         salePrice,

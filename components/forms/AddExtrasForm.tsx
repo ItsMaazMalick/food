@@ -4,7 +4,7 @@ import TextInput from "@/components/Inputs/TextInput";
 import FormSubmitButton from "@/components/button/FormSubmitButton";
 import { Form } from "@/components/ui/form";
 import { categorySchema } from "@/lib/validations/categorySchema";
-import { extrasSchema } from "@/lib/validations/extrasValidation";
+import { extrasSchema } from "@/lib/validations/extrasSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -15,16 +15,17 @@ import { createExtras } from "@/app/actions/extras/extras";
 import Link from "next/link";
 import { UploadButton } from "@/utils/uploadthing";
 import UploadButtonComponent from "@/utils/UploadButtonComponent";
+import ImageInput from "../Inputs/ImageInput";
 
 const formSchema = extrasSchema;
 
 export default function AddExtrasForm() {
-  const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
+      image: undefined,
       price: 0,
     },
   });
@@ -33,11 +34,10 @@ export default function AddExtrasForm() {
     setError("");
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("image", image);
+    formData.append("image", values.image as File);
     formData.append("price", String(values.price));
 
     const result = await createExtras(formData);
-    setImage("");
     form.reset();
     if (result) {
       setError(result?.message);
@@ -51,9 +51,7 @@ export default function AddExtrasForm() {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
               <TextInput label="Item Name" name="name" control={form.control} />
-              <div className="mt-8">
-                <UploadButtonComponent image={image} setImage={setImage} />
-              </div>
+              <ImageInput label="Image" name="image" control={form.control} />
               <TextInput
                 label="Price"
                 name="price"

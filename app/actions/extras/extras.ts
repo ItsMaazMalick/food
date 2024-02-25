@@ -2,7 +2,8 @@
 
 import prisma from "@/lib/db";
 import { deleteImage, uploadImage } from "@/lib/handleImage";
-import { extrasSchema } from "@/lib/validations/extrasValidation";
+import { extrasSchema } from "@/lib/validations/extrasSchema";
+import { convertToBase64 } from "@/utils/convertToBase64";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -14,6 +15,7 @@ export async function getAllExtras() {
 export async function createExtras(formData: FormData) {
   const validatedFields = extrasSchema.safeParse({
     name: String(formData.get("name")),
+    image: formData.get("image") as File,
     price: Number(formData.get("price")),
   });
   if (!validatedFields.success) {
@@ -24,22 +26,14 @@ export async function createExtras(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  const { name, price } = validatedFields.data;
-  const image = String(formData.get("image"));
+  const { name, image, price } = validatedFields.data;
 
-  if (!image) {
-    return {
-      status: 401,
-      success: false,
-      message: "Image is required",
-      // errors: validatedFields.error.flatten().fieldErrors,
-    };
-  }
+  const imageUrl = await convertToBase64(image);
 
   const extras = await prisma.extras.create({
     data: {
       name,
-      image,
+      image: imageUrl!,
       price,
     },
   });
@@ -132,6 +126,7 @@ export async function getSingleExtras(id: string) {
 export async function updateExtras(formData: FormData) {
   const validatedFields = extrasSchema.safeParse({
     name: String(formData.get("name")),
+    image: formData.get("image") as File,
     price: Number(formData.get("price")),
   });
   const id = String(formData.get("id"));
@@ -152,19 +147,21 @@ export async function updateExtras(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  const { name, price } = validatedFields.data;
-  const image = String(formData.get("image"));
-  let imageUrl = String(formData.get("imageUrl"));
+  const { name, image, price } = validatedFields.data;
+
+  let imageUrl;
 
   if (image) {
-    imageUrl = image;
+    imageUrl = await convertToBase64(image);
+  } else {
+    imageUrl = String(formData.get("imageUrl"));
   }
 
   await prisma.extras.update({
     where: { id },
     data: {
       name,
-      image: imageUrl,
+      image: imageUrl!,
       price,
     },
   });

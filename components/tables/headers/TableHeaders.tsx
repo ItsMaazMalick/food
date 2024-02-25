@@ -30,7 +30,7 @@ export const CategoriesHeader: ColumnDef<any>[] = [
     cell: ({ row }) => (
       <div className="relative w-14 h-10">
         <Image
-          src={`data:image/png;base64,${row.original.image}`}
+          src={row.original.image}
           alt={row.original.name}
           fill
           className="rounded-md object-center"

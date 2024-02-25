@@ -79,6 +79,7 @@ export async function loginUser({
     email: user.email,
     referralCode: user.referralCode,
     points: user.points,
+    favorites: user.favorites,
     // errors: {},
     token,
   };
@@ -154,6 +155,31 @@ export async function registerUser({
 export async function getUserByEmail(email: string) {
   const user = await prisma.user.findUnique({
     where: { email },
+  });
+  if (!user) {
+    return null;
+  }
+  return user;
+}
+
+export async function getUserByToken(token: string) {
+  if (!token) {
+    return null;
+  }
+  const decodedToken = jwt.decode(token);
+  if (!decodedToken) {
+    return null;
+  }
+  const { tokenData }: any = decodedToken;
+  if (!tokenData) {
+    return null;
+  }
+  const id = tokenData.id;
+  if (!id) {
+    return null;
+  }
+  const user = await prisma.user.findUnique({
+    where: { id },
   });
   if (!user) {
     return null;

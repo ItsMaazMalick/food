@@ -1,5 +1,5 @@
 "use client";
-import { createCategory } from "@/app/actions/categories/categories";
+import { createProduct } from "@/app/actions/product/product";
 import TextInput from "@/components/Inputs/TextInput";
 import FormSubmitButton from "@/components/button/FormSubmitButton";
 import {
@@ -10,12 +10,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { categorySchema } from "@/lib/validations/categorySchema";
+import { productSchema } from "@/lib/validations/productSchema";
+import UploadButtonComponent from "@/utils/UploadButtonComponent";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { string, z } from "zod";
-import { Input } from "../ui/input";
+import { z } from "zod";
+import MultiSelectInput from "../Inputs/MultiSelectInput";
 import SelectInput from "../Inputs/SelectInput";
 import {
   Select,
@@ -26,14 +27,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Label } from "../ui/label";
-import MultiSelectInput from "../Inputs/MultiSelectInput";
-import DefaultValue from "../Inputs/DefaultValue";
-import { createProduct } from "@/app/actions/product/product";
-import { productSchema } from "@/lib/validations/itemValidation";
-import Link from "next/link";
-import { UploadButton } from "@/utils/uploadthing";
-import UploadButtonComponent from "@/utils/UploadButtonComponent";
 
 const formSchema = productSchema;
 

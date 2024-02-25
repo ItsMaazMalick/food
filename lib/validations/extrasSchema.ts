@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createCategorySchema = z.object({
+export const extrasSchema = z.object({
   name: z.string().min(1, "Name is required"),
   image: z
     .custom<File | undefined>((file) => {
@@ -12,13 +12,5 @@ export const createCategorySchema = z.object({
       },
       { message: "File must be less than 2MB" }
     ),
-});
-
-export const updateCategorySchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  image: z
-    .custom<File | undefined>((file) => {
-      return file; // Return true if file is undefined
-    })
-    .optional(),
+  price: z.coerce.number().min(0, "Price is required"),
 });

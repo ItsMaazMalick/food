@@ -3,14 +3,15 @@ import { createCategory } from "@/app/actions/categories/categories";
 import TextInput from "@/components/Inputs/TextInput";
 import FormSubmitButton from "@/components/button/FormSubmitButton";
 import { Form } from "@/components/ui/form";
-import { categorySchema } from "@/lib/validations/categorySchema";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import ImageInput from "../Inputs/ImageInput";
+import { createCategorySchema } from "@/lib/validations/categorySchema";
 
-const formSchema = categorySchema;
+const formSchema = createCategorySchema;
 
 export default function AddCategoryForm() {
   const [error, setError] = useState("");
