@@ -1,9 +1,10 @@
 "use server";
 
-import { cookies } from "next/headers";
-
 // * OK: -> DELETE COOKIE
-export const deleteCookie = () => {
-  cookies()?.set("auth-token", "", { expires: new Date(0) });
-  return null;
-};
+export async function deleteCookie() {
+  const res = await fetch("http://localhost:3000/api/v1/deleteCookie", {
+    cache: "no-store",
+  });
+  const data = await res.json();
+  return data;
+}

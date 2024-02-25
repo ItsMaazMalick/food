@@ -131,7 +131,9 @@ export async function getAdmin(token: string) {
   }
 
   const decryptToken = await decryptString(token);
-
+  if (!decryptToken) {
+    return deleteCookie();
+  }
   const decodedToken = jwt.decode(decryptToken);
   if (!decodedToken) {
     return deleteCookie();
