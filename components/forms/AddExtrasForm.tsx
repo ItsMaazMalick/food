@@ -1,20 +1,13 @@
 "use client";
-import { createCategory } from "@/app/actions/categories/categories";
+import { createExtras } from "@/app/actions/extras/extras";
 import TextInput from "@/components/Inputs/TextInput";
 import FormSubmitButton from "@/components/button/FormSubmitButton";
 import { Form } from "@/components/ui/form";
-import { categorySchema } from "@/lib/validations/categorySchema";
 import { extrasSchema } from "@/lib/validations/extrasSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { createExtras } from "@/app/actions/extras/extras";
-import Link from "next/link";
-import { UploadButton } from "@/utils/uploadthing";
-import UploadButtonComponent from "@/utils/UploadButtonComponent";
 import ImageInput from "../Inputs/ImageInput";
 
 const formSchema = extrasSchema;
