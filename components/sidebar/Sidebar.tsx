@@ -4,9 +4,14 @@ import Link from "next/link";
 import AdminLogoutForm from "../forms/AdminLogoutForm";
 import SidebarLinks from "./SidebarLinks";
 import { Button } from "../ui/button";
+import { redirect } from "next/navigation";
 
 export default async function Sidebar() {
-  const { id, name, image } = await getAdminSession();
+  const data = await getAdminSession();
+  if (!data.success) {
+    return redirect("/admin/auth/login");
+  }
+  const { id, name, image } = data;
   const imgSrc = image !== "null" ? image : "/images/logo.jpeg";
   return (
     <div className="bg-white sm:w-[150px] md:w-[200px] min-h-screen z-50 sticky top-0 shadow-xl">

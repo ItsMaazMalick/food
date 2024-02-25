@@ -12,32 +12,56 @@ export const getAdminSession = async () => {
     const userCookie = cookieStore.get("auth-token")?.value;
     const userId = cookieStore.get("user")?.value;
     if (!userCookie || !userId) {
-      return null;
+      return {
+        status: 401,
+        success: false,
+        message: "Unauthorized",
+      };
     }
     const decryptToken = await decryptString(userCookie);
     const decryptId = await decryptString(userId);
     const decodedToken = jwt.decode(decryptToken);
     if (!decodedToken) {
-      return null;
+      return {
+        status: 401,
+        success: false,
+        message: "Unauthorized",
+      };
     }
     const { tokenData }: any = decodedToken;
     if (!tokenData) {
-      return null;
+      return {
+        status: 401,
+        success: false,
+        message: "Unauthorized",
+      };
     }
     const id = tokenData.id;
     if (!id) {
-      return null;
+      return {
+        status: 401,
+        success: false,
+        message: "Unauthorized",
+      };
     }
 
     if (id !== decryptId) {
-      return null;
+      return {
+        status: 401,
+        success: false,
+        message: "Unauthorized",
+      };
     }
 
     const admin = await prisma.admin.findUnique({
       where: { id },
     });
     if (!admin) {
-      return null;
+      return {
+        status: 401,
+        success: false,
+        message: "Unauthorized",
+      };
     }
     return {
       status: 200,
@@ -48,6 +72,10 @@ export const getAdminSession = async () => {
       image: admin.image,
     };
   } catch (error) {
-    return null;
+    return {
+      status: 401,
+      success: false,
+      message: "Unauthorized",
+    };
   }
 };
