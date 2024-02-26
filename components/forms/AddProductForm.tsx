@@ -1,5 +1,5 @@
 "use client";
-import { createCategory } from "@/app/actions/categories/categories";
+import { createProduct } from "@/app/actions/product/product";
 import TextInput from "@/components/Inputs/TextInput";
 import FormSubmitButton from "@/components/button/FormSubmitButton";
 import {
@@ -12,10 +12,11 @@ import {
 } from "@/components/ui/form";
 import { productSchema } from "@/lib/validations/productSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { string, z } from "zod";
-import { Input } from "../ui/input";
+import { z } from "zod";
+import ImageInput from "../Inputs/ImageInput";
+import MultiSelectInput from "../Inputs/MultiSelectInput";
 import SelectInput from "../Inputs/SelectInput";
 import {
   Select,
@@ -26,13 +27,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Label } from "../ui/label";
-import MultiSelectInput from "../Inputs/MultiSelectInput";
-import { createProduct } from "@/app/actions/product/product";
-import Link from "next/link";
-import { UploadButton } from "@/utils/uploadthing";
-import UploadButtonComponent from "@/utils/UploadButtonComponent";
-import ImageInput from "../Inputs/ImageInput";
 
 const formSchema = productSchema;
 

@@ -29,7 +29,7 @@ import { UploadButton } from "@/utils/uploadthing";
 import UploadButtonComponent from "@/utils/UploadButtonComponent";
 import ImageInput from "../Inputs/ImageInput";
 
-const formSchema = createCategorySchema;
+const formSchema = updateCategorySchema;
 
 export default function EditCategoryForm({ category }: any) {
   const [error, setError] = useState("");
@@ -42,18 +42,22 @@ export default function EditCategoryForm({ category }: any) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setError("");
-    const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("categoryId", category.id);
-    formData.append("image", values.image as File);
-    formData.append("imageUrl", category.image);
+    if (category.name === values.name && values.image === undefined) {
+      setError("Nothing changed");
+    } else {
+      setError("");
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("categoryId", category.id);
+      formData.append("image", values.image as File);
+      formData.append("imageUrl", category.image);
 
-    const result = await updateCategory(formData);
-    // setImage("");
-    form.reset();
-    if (result) {
-      setError(result?.message);
+      const result = await updateCategory(formData);
+      // setImage("");
+      form.reset();
+      if (result) {
+        setError(result?.message);
+      }
     }
   }
   return (
@@ -66,7 +70,7 @@ export default function EditCategoryForm({ category }: any) {
             <ImageInput label="Image" name="image" control={form.control} />
             <div className="relative w-[100%] h-56 md:h-64 lg:h-40">
               <Image
-                src={`data:image/png;base64,${category.image}`}
+                src={category.image}
                 alt={category.name}
                 fill
                 className="object-center border-2 border-primary p-2 rounded-md"

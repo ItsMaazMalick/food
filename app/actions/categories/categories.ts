@@ -145,23 +145,14 @@ export async function updateCategory(formData: FormData) {
     };
   }
   const slug = toSlug(name);
-  const isCategory = await prisma.category.findUnique({
-    where: { slug },
-  });
-  if (isCategory) {
-    return {
-      status: 401,
-      success: false,
-      message: "Category already exists",
-      // errors: validatedFields.error.flatten().fieldErrors,
-    };
-  }
-  const imageUrl = await convertToBase64(image);
 
-  // let imageUrl = String(formData.get("imageUrl"));
-  // if (image) {
-  //   imageUrl = image;
-  // }
+  let imageUrl;
+  if (image && image.name) {
+    imageUrl = await convertToBase64(image);
+  } else {
+    imageUrl = String(formData.get("imageUrl"));
+  }
+
   const newCategory = await prisma.category.update({
     where: { id: categoryId },
     data: {

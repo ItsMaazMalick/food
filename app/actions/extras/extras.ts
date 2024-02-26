@@ -2,7 +2,7 @@
 
 import prisma from "@/lib/db";
 import { deleteImage, uploadImage } from "@/lib/handleImage";
-import { extrasSchema } from "@/lib/validations/extrasSchema";
+import { editExtrasSchema, extrasSchema } from "@/lib/validations/extrasSchema";
 import { convertToBase64 } from "@/utils/convertToBase64";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -124,7 +124,7 @@ export async function getSingleExtras(id: string) {
 }
 
 export async function updateExtras(formData: FormData) {
-  const validatedFields = extrasSchema.safeParse({
+  const validatedFields = editExtrasSchema.safeParse({
     name: String(formData.get("name")),
     image: formData.get("image") as File,
     price: Number(formData.get("price")),
@@ -150,8 +150,7 @@ export async function updateExtras(formData: FormData) {
   const { name, image, price } = validatedFields.data;
 
   let imageUrl;
-
-  if (image) {
+  if (image && image.name) {
     imageUrl = await convertToBase64(image);
   } else {
     imageUrl = String(formData.get("imageUrl"));

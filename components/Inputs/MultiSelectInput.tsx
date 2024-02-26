@@ -11,6 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { FormDescription, FormMessage } from "../ui/form";
 
 type Item = {
   name: string;
@@ -22,6 +23,7 @@ type MultiInputProps = {
   name: string;
   data: Item[];
   onSelectionChange: (selectedIds: string[]) => void;
+  description?: string;
 };
 
 export default function MultiSelectInput({
@@ -29,6 +31,7 @@ export default function MultiSelectInput({
   name,
   data,
   onSelectionChange,
+  description,
 }: MultiInputProps) {
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
   const [selectedIds, setSelectedIds] = useState([]);
@@ -85,6 +88,9 @@ export default function MultiSelectInput({
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
+      <FormDescription className="text-destructive">
+        {description}
+      </FormDescription>
     </div>
   );
 }

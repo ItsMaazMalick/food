@@ -3,7 +3,7 @@ import { updateExtras } from "@/app/actions/extras/extras";
 import TextInput from "@/components/Inputs/TextInput";
 import FormSubmitButton from "@/components/button/FormSubmitButton";
 import { Form } from "@/components/ui/form";
-import { extrasSchema } from "@/lib/validations/extrasSchema";
+import { editExtrasSchema, extrasSchema } from "@/lib/validations/extrasSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useState } from "react";
@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import ImageInput from "../Inputs/ImageInput";
 
-const formSchema = extrasSchema;
+const formSchema = editExtrasSchema;
 
 export default function EditExtrasForm({ extras }: any) {
   const [error, setError] = useState("");
@@ -25,19 +25,27 @@ export default function EditExtrasForm({ extras }: any) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setError("");
-    const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("price", String(values.price));
-    formData.append("id", extras.id);
-    formData.append("image", values.image as File);
-    formData.append("imageUrl", extras.image);
+    if (
+      extras.name === values.name &&
+      extras.price === values.price &&
+      values.image === undefined
+    ) {
+      setError("Nothing changed");
+    } else {
+      setError("");
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("price", String(values.price));
+      formData.append("id", extras.id);
+      formData.append("image", values.image as File);
+      formData.append("imageUrl", extras.image);
 
-    const result = await updateExtras(formData);
+      const result = await updateExtras(formData);
 
-    form.reset();
-    if (result) {
-      setError(result?.message);
+      form.reset();
+      if (result) {
+        setError(result?.message);
+      }
     }
   }
 
@@ -57,7 +65,7 @@ export default function EditExtrasForm({ extras }: any) {
 
             <div className="relative w-[100%] h-56 md:h-64 lg:h-40">
               <Image
-                src={`data:image/png;base64,${extras.image}`}
+                src={extras.image}
                 alt={extras.name}
                 fill
                 className="object-center border-2 border-primary p-2 rounded-md"

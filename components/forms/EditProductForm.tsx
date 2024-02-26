@@ -10,10 +10,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { productSchema } from "@/lib/validations/productSchema";
+import {
+  editProductSchema,
+  productSchema,
+} from "@/lib/validations/productSchema";
 import UploadButtonComponent from "@/utils/UploadButtonComponent";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import MultiSelectInput from "../Inputs/MultiSelectInput";
@@ -27,8 +30,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import Image from "next/image";
+import ImageInput from "../Inputs/ImageInput";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import DisableInput from "../Inputs/DisableInput";
+import SelectwithArray from "../Inputs/SelectwithArray";
+import DefaultValue from "../Inputs/DefaultValue";
 
-const formSchema = productSchema;
+const formSchema = editProductSchema;
 
 type PageProps = {
   categories: any;
@@ -44,6 +54,14 @@ export default function EditProductForm({
   const [image, setImage] = useState("");
   const [selectedExtras, setSelectedExtras] = useState<string[]>();
   const [error, setError] = useState("");
+  const [defCat, setDefCat] = useState(
+    categories.find((cat: any) => cat.id === product.categoryId)?.name
+  );
+
+  useEffect(() => {
+    alert("Note: Please add extras from scratch");
+  }, []);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -91,13 +109,16 @@ export default function EditProductForm({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
               <TextInput label="Item Name" name="name" control={form.control} />
               {/* <DefaultValue data={extras} id={product.extras} /> */}
+              <div>
+                <DisableInput label="Category" placeholder={defCat} />
+              </div>
               <SelectInput
                 label="Category"
                 name="categoryId"
                 control={form.control}
                 items={categories}
               />
-              <UploadButtonComponent image={image} setImage={setImage} />
+              <ImageInput label="Image" name="image" control={form.control} />
               <TextInput
                 label="In Stock"
                 name="inStock"
@@ -116,36 +137,42 @@ export default function EditProductForm({
                 type="number"
                 control={form.control}
               />
-              <FormField
-                control={form.control}
+              <DisableInput
+                label="Featured"
+                placeholder={product.featured ? "TRUE" : "FALSE"}
+              />
+              <DisableInput
+                label="Recommended"
+                placeholder={product.isRecommended ? "YES" : "NO"}
+              />
+              <DefaultValue data={extras} />
+              <SelectwithArray
+                label="Featured"
                 name="featured"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Featured</FormLabel>
-                    <Select onValueChange={field.onChange}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a value" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Featured</SelectLabel>
-                          <SelectItem value="FALSE">FALSE</SelectItem>
-                          <SelectItem value="TRUE">TRUE</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                      <FormMessage />
-                    </Select>
-                  </FormItem>
-                )}
+                control={form.control}
+                items={["FALSE", "TRUE"]}
+              />
+              <SelectwithArray
+                label="Recommended"
+                name="isRecommended"
+                control={form.control}
+                items={["FALSE", "TRUE"]}
               />
               <MultiSelectInput
                 label="Extras"
                 name="extras"
                 data={extras}
                 onSelectionChange={handleExtrasSelectionChange}
+                description="Note: Please add extras from scratch"
               />
+              <div className="relative w-[100%] h-56 md:h-64 lg:h-40">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  className="object-center border-2 border-primary p-2 rounded-md"
+                />
+              </div>
             </div>
           </div>
           {error && (

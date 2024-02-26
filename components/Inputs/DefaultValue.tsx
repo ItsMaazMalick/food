@@ -1,27 +1,36 @@
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
 type PageProps = {
   data: any;
-  id: string;
 };
 
-export default function DefaultValue({ data, id }: PageProps) {
-  const sec = ["65c88249d0186d647728bad5"];
-  console.log(data);
-  console.log(id);
-  let values = [];
-  for (let i of id) {
-    console.log(i);
-    values.push(data.find((value: any) => value.id === i));
-  }
-
+export default function DefaultValue({ data }: PageProps) {
+  const id = ["65db2341bd7efa65c603577c", "65db16c8bd7efa65c6035779"];
+  const filteredData = data.filter((item: any) => id.includes(item.id));
+  const filterString = filteredData.map((data: any) => {
+    name: data.name;
+    id: data.id;
+  });
   return (
-    <div>
-      <div className="mb-2">
-        <Label htmlFor="cat">Old Category</Label>
-      </div>
-      <Input id="cat" type="text" value={values} />
-    </div>
+    <FormField
+      name=""
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Old Extras</FormLabel>
+          <FormControl>
+            <Input disabled placeholder={filterString} />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   );
 }

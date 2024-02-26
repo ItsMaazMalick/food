@@ -13,6 +13,8 @@ import OtpInput from "../otpComponent/OtpInput";
 import { Label } from "../ui/label";
 import { CardDescription } from "../ui/card";
 import { sendOTP } from "@/utils/sendOTP";
+import TimerFunction from "../timer/TimerFunction";
+import { Button } from "../ui/button";
 
 const formSchema = adminRegisterSchema;
 
@@ -24,6 +26,7 @@ export default function AdminRegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [time, setTime] = useState<number>(60);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,19 +58,25 @@ export default function AdminRegisterForm() {
       setEmail(values.email);
       setPassword(values.password);
       setConfirmPassword(values.confirmPassword);
-      const res = await sendOTP({ name: values.name, email: values.email });
-      if (!res.success) {
-        setIsOtp(false);
-        setError(res.message || "");
-      } else {
-        setServerOtp(res.OTP || "");
-        setError("");
-        setIsOtp(true);
-      }
+      await OTPSend({ name: values.name, email: values.email });
     }
   }
 
+  const OTPSend = async ({ name, email }: { name: string; email: string }) => {
+    setTime(60);
+    const res = await sendOTP({ name, email });
+    if (!res.success) {
+      setIsOtp(false);
+      setError(res.message || "");
+    } else {
+      setServerOtp(res.OTP || "");
+      setError("");
+      setIsOtp(true);
+    }
+  };
+
   const handleOTP = (value: string) => {
+    setError("");
     if (value != serverOtp) {
       setError("Invalid OTP");
     }
@@ -92,43 +101,61 @@ export default function AdminRegisterForm() {
             </span>
           </CardDescription>
           <OtpInput handleOTP={handleOTP} />
-        </div>
-      ) : (
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <div className="space-y-4">
-              <TextInput label="Name" name="name" control={form.control} />
-              <TextInput
-                label="Email"
-                name="email"
-                type="email"
-                placeholder="example@gmail.com"
-                control={form.control}
-              />
-              <TextInput
-                label="Password"
-                name="password"
-                type="password"
-                placeholder="******"
-                control={form.control}
-              />
-              <TextInput
-                label="Confirm Password"
-                name="confirmPassword"
-                type="password"
-                placeholder="******"
-                control={form.control}
-              />
-              <Link className="ml-auto inline-block text-sm underline" href="#">
-                Forgot your password?
-              </Link>
-              <FormSubmitButton
-                title="Register"
-                loading={form.formState.isSubmitting}
-              />
+          <form action={() => OTPSend({ name, email })}>
+            <div className="flex text-sm mt-4 justify-center items-center">
+              <div className="mr-1">Resend authorization code in</div>
+              {time > 0 ? (
+                <>
+                  <TimerFunction time={time} setTime={setTime} />
+                  <span>&nbsp;sec</span>
+                </>
+              ) : (
+                <FormSubmitButton title="Submit" />
+              )}
             </div>
           </form>
-        </Form>
+        </div>
+      ) : (
+        <>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <div className="space-y-4">
+                <TextInput label="Name" name="name" control={form.control} />
+                <TextInput
+                  label="Email"
+                  name="email"
+                  type="email"
+                  placeholder="example@gmail.com"
+                  control={form.control}
+                />
+                <TextInput
+                  label="Password"
+                  name="password"
+                  type="password"
+                  placeholder="******"
+                  control={form.control}
+                />
+                <TextInput
+                  label="Confirm Password"
+                  name="confirmPassword"
+                  type="password"
+                  placeholder="******"
+                  control={form.control}
+                />
+                <Link
+                  className="ml-auto inline-block text-sm underline"
+                  href="#"
+                >
+                  Forgot your password?
+                </Link>
+                <FormSubmitButton
+                  title="Register"
+                  loading={form.formState.isSubmitting}
+                />
+              </div>
+            </form>
+          </Form>
+        </>
       )}
     </>
   );
