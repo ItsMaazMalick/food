@@ -27,6 +27,7 @@ export default function AdminRegisterForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [time, setTime] = useState<number>(60);
+  const [success, setSuccess] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,6 +39,7 @@ export default function AdminRegisterForm() {
   });
 
   async function registerAdmin() {
+    setSuccess("Successfully registered");
     const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
@@ -76,6 +78,7 @@ export default function AdminRegisterForm() {
   };
 
   const handleOTP = (value: string) => {
+    setSuccess("");
     setError("");
     if (value != serverOtp) {
       setError("Invalid OTP");
@@ -94,26 +97,34 @@ export default function AdminRegisterForm() {
       )}
       {isOtp ? (
         <div className="w-full">
-          <CardDescription className="my-4">
-            Please enter One-Time-Verification code sent to
-            <span className="block mx-auto text-center text-xs font-bold">
-              {email.substring(0, 3)}********@{email.split("@")[1]}
-            </span>
-          </CardDescription>
-          <OtpInput handleOTP={handleOTP} />
-          <form action={() => OTPSend({ name, email })}>
-            <div className="flex text-sm mt-4 justify-center items-center">
-              <div className="mr-1">Resend authorization code in</div>
-              {time > 0 ? (
-                <>
-                  <TimerFunction time={time} setTime={setTime} />
-                  <span>&nbsp;sec</span>
-                </>
-              ) : (
-                <FormSubmitButton title="Submit" />
-              )}
+          {success ? (
+            <div className="flex justify-center items-center text-green-600">
+              {success}
             </div>
-          </form>
+          ) : (
+            <>
+              <CardDescription className="my-4">
+                Please enter One-Time-Verification code sent to
+                <span className="block mx-auto text-center text-xs font-bold">
+                  {email.substring(0, 3)}********@{email.split("@")[1]}
+                </span>
+              </CardDescription>
+              <OtpInput handleOTP={handleOTP} />
+              <form action={() => OTPSend({ name, email })}>
+                <div className="flex text-sm mt-4 justify-center items-center">
+                  <div className="mr-1">Resend authorization code in</div>
+                  {time > 0 ? (
+                    <>
+                      <TimerFunction time={time} setTime={setTime} />
+                      <span>&nbsp;sec</span>
+                    </>
+                  ) : (
+                    <Button type="submit">Resend</Button>
+                  )}
+                </div>
+              </form>
+            </>
+          )}
         </div>
       ) : (
         <>
