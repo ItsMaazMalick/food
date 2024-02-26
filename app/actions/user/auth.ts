@@ -6,6 +6,7 @@ import {
   userLoginSchema,
   userRegisterSchema,
 } from "@/lib/validations/userValidation";
+import { decryptString, encryptString } from "@/utils/encryption";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -72,6 +73,7 @@ export async function loginUser({
     process.env.JWT_SECRET!,
     { expiresIn: "1d" }
   );
+  const encryptToken = encryptString(token);
   return {
     status: 200,
     success: true,
@@ -81,7 +83,7 @@ export async function loginUser({
     points: user.points,
     favorites: user.favorites,
     // errors: {},
-    token,
+    token: encryptToken,
   };
 }
 
@@ -166,7 +168,8 @@ export async function getUserByToken(token: string) {
   if (!token) {
     return null;
   }
-  const decodedToken = jwt.decode(token);
+  const decryptToken = decryptString(token);
+  const decodedToken = jwt.decode(decryptToken);
   if (!decodedToken) {
     return null;
   }
