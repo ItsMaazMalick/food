@@ -19,7 +19,7 @@ export const sendOTP = async ({
   const OTP = generateOTP(6);
 
   const mailOptions = {
-    from: process.env.SMTP_EMAIL,
+    from: `GYROS'N MORE ${process.env.SMTP_EMAIL}`,
     to: email,
     subject: "OTP Verification",
     html: `<div>

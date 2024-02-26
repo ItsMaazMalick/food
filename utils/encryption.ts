@@ -1,16 +1,15 @@
-"use server";
 import CryptoJS from "crypto-js";
 
-export async function encryptString(string: string) {
-  const encryptedString = CryptoJS.AES.encrypt(
+export function encryptString(string: string) {
+  const encrypted = CryptoJS.AES.encrypt(
     string,
     process.env.JWT_SECRET!
   ).toString();
-  return encryptedString;
+  return encrypted;
 }
 
-export async function decryptString(string: string) {
+export function decryptString(string: string) {
   const decryptedBytes = CryptoJS.AES.decrypt(string, process.env.JWT_SECRET!);
-  const decryptedString = decryptedBytes.toString(CryptoJS.enc.Utf8);
-  return decryptedString;
+  const decrypted = decryptedBytes.toString(CryptoJS.enc.Utf8);
+  return decrypted;
 }
