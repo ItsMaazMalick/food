@@ -77,6 +77,7 @@ export async function loginUser({
   return {
     status: 200,
     success: true,
+    id: user.id,
     name: user.name,
     email: user.email,
     referralCode: user.referralCode,
