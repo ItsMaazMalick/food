@@ -15,7 +15,18 @@ export async function GET() {
         message: "Invalid request",
       });
     }
-    const data = await prisma.product.findMany();
+    const data = await prisma.product.findMany({
+      include: {
+        extras: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            price: true,
+          },
+        },
+      },
+    });
     return NextResponse.json({ status: 200, success: true, data });
   } catch (error) {
     return NextResponse.json({

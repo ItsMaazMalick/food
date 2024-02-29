@@ -53,8 +53,8 @@ model Extras {
   name      String
   image     String
   price     Float
-  itemId    String[]  @db.ObjectId
-  products  Product[] @relation(fields: [itemId], references: [id])
+  productId String[]  @db.ObjectId
+  products  Product[] @relation(fields: [productId], references: [id])
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
