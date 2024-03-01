@@ -29,7 +29,7 @@ model Category {
 }
 
 model Product {
-  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   image         String
   inStock       Int
@@ -37,26 +37,27 @@ model Product {
   salePrice     Float
   featured      Boolean
   isRecommended Boolean
-  category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  categoryId    String      @db.ObjectId
-  extrasId      String[]    @db.ObjectId
-  extras        Extras[]    @relation(fields: [extrasId], references: [id])
-  orderItems    OrderItem[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  User          User?       @relation(fields: [userId], references: [id])
-  userId        String?     @db.ObjectId
+  category      Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId    String         @db.ObjectId
+  extrasId      String[]       @db.ObjectId
+  extras        Extras[]       @relation(fields: [extrasId], references: [id])
+  orderProducts OrderProduct[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  User          User?          @relation(fields: [userId], references: [id])
+  userId        String?        @db.ObjectId
 }
 
 model Extras {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  image     String
-  price     Float
-  productId String[]  @db.ObjectId
-  products  Product[] @relation(fields: [productId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id          String               @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  image       String
+  price       Float
+  productId   String[]             @db.ObjectId
+  products    Product[]            @relation(fields: [productId], references: [id])
+  orderExtras OrderProductExtras[]
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
 }
 
 model User {
@@ -74,35 +75,53 @@ model User {
 }
 
 model Order {
-  id         String      @id @default(auto()) @map("_id") @db.ObjectId
-  user       User        @relation(fields: [userId], references: [id])
-  userId     String      @db.ObjectId
-  address    String
-  contact    String
-  orderItems OrderItem[]
-  quantity   Int
-  subTotal   Float
-  total      Float
-  status     Status      @default(PENDING)
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String         @db.ObjectId
+  address       String
+  contact       String
+  orderProducts OrderProduct[]
+  quantity      Int
+  total         Float
+  orderStatus   OrderStatus    @default(pending)
+  paymentStatus PaymentStatus  @default(pending)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
-model OrderItem {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  order     Order    @relation(fields: [orderId], references: [id])
-  orderId   String   @db.ObjectId
-  product   Product  @relation(fields: [itemId], references: [id])
-  itemId    String   @db.ObjectId
-  quantity  Int
-  price     Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model OrderProduct {
+  id                 String               @id @default(auto()) @map("_id") @db.ObjectId
+  order              Order                @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId            String               @db.ObjectId
+  product            Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId          String               @db.ObjectId
+  orderProductExtras OrderProductExtras[]
+  quantity           Int
+  price              Float
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
 }
 
-enum Status {
-  PENDING
-  CONFIRM
-  DELIVERED
-  DISPATCHED
+model OrderProductExtras {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  orderProduct   OrderProduct @relation(fields: [orderProductId], references: [id], onDelete: Cascade)
+  orderProductId String       @db.ObjectId
+  extras         Extras       @relation(fields: [extrasId], references: [id], onDelete: Cascade)
+  extrasId       String       @db.ObjectId
+  quantity       Int
+  price          Float
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+enum OrderStatus {
+  pending
+  prepairing
+  ready
+  completed
+}
+
+enum PaymentStatus {
+  pending
+  paid
 }

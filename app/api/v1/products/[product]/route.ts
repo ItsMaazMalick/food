@@ -20,6 +20,16 @@ export async function GET(request: NextRequest) {
 
     const product = await prisma.product.findMany({
       where: { id: params },
+      include: {
+        extras: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            price: true,
+          },
+        },
+      },
     });
 
     if (!product) {

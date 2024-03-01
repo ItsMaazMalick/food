@@ -19,6 +19,7 @@ export const getPublicToken = () => {
 export async function verifyPublicToken() {
   const headerList = headers();
   const token = headerList.get("Authorization")?.split(" ")[1];
+
   if (!token) {
     return null;
   }
@@ -26,10 +27,12 @@ export async function verifyPublicToken() {
   if (!decodedToken) {
     return null;
   }
+
   const { tokenData }: any = decodedToken;
   if (!tokenData) {
     return null;
   }
+
   const isValid = tokenData === process.env.TOKEN_VALUE;
   if (!isValid) {
     return null;

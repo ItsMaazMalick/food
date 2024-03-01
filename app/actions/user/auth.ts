@@ -59,6 +59,11 @@ export async function loginUser({
       message: "Invalid credentials",
     };
   }
+  // Getting User IP
+  const res = await fetch("https://ipapi.co/json/", { cache: "no-store" });
+  const data = await res.json();
+  console.log(data.ip);
+
   //TOKEN DATA
   const tokenData = {
     id: user.id,

@@ -14,6 +14,7 @@ export async function GET() {
         message: "Invalid request",
       });
     }
+
     const data = await prisma.category.findMany();
     return NextResponse.json({ status: 200, success: true, data });
   } catch (error) {
