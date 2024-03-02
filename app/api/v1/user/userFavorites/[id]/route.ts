@@ -6,14 +6,14 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    // const token = await verifyUserToken();
-    // if (!token) {
-    //   return NextResponse.json({
-    //     status: 401,
-    //     success: false,
-    //     message: "Invalid request",
-    //   });
-    // }
+    const token = await verifyUserToken();
+    if (!token) {
+      return NextResponse.json({
+        status: 401,
+        success: false,
+        message: "Invalid request",
+      });
+    }
     const pathname = request.nextUrl.pathname;
     const params = pathname.split("/v1/user/userFavorites/")[1];
     const user = await prisma.user.findUnique({ where: { id: params } });

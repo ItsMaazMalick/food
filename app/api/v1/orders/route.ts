@@ -18,12 +18,15 @@ type Product = {
 };
 
 type RequestData = {
+  trxId: string;
   userId: string;
   address: string;
   contact: string;
   products: Product[];
   quantity: number;
   total: number;
+  orderType: string;
+  isPaid: boolean;
 };
 
 export const dynamic = "force-dynamic";
@@ -39,6 +42,16 @@ export async function POST(request: NextRequest) {
         message: "Invalid request",
       });
     }
+    const isDuplicate = await prisma.order.findUnique({
+      where: { trxId: data.trxId },
+    });
+    if (isDuplicate) {
+      return NextResponse.json({
+        status: 401,
+        success: false,
+        message: "Invalid TRX ID",
+      });
+    }
 
     const order = await prisma.order.create({
       data: {
@@ -47,10 +60,18 @@ export async function POST(request: NextRequest) {
             id: data.userId,
           },
         },
+        trxId: data.trxId,
         address: "Bhara Kahu",
         contact: "03125770904",
         quantity: 5,
         total: 4.56,
+        orderType:
+          data.orderType === "pickup"
+            ? "pickup"
+            : data.orderType === "dinning"
+            ? "dinning"
+            : "delivery",
+        isPaid: data.isPaid,
       },
     });
 
@@ -87,6 +108,42 @@ export async function POST(request: NextRequest) {
       status: 500,
       success: false,
       message: "Internal Server error",
+    });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const { orderId } = await request.json();
+
+    // Delete OrderProductExtras
+    await prisma.orderProductExtras.deleteMany({
+      where: {
+        orderProduct: {
+          orderId: orderId,
+        },
+      },
+    });
+
+    // Delete OrderProducts
+    await prisma.orderProduct.deleteMany({
+      where: {
+        orderId: orderId,
+      },
+    });
+
+    // Delete Order
+    await prisma.order.delete({
+      where: { id: orderId },
+    });
+
+    return NextResponse.json({ status: 200, message: "Deleted" });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({
+      status: 500,
+      success: false,
+      message: "Internal Server Error",
     });
   }
 }
