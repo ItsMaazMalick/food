@@ -1,102 +1,64 @@
 "use server";
-
 import prisma from "@/lib/db";
-type Props = {
-  userId: string;
-  address: string;
-  contact: string;
-  products: [
-    {
-      productId: string;
-      extras: [
-        {
-          id: string;
-          name: string;
-          quantity: number;
-          price: number;
-        }
-      ];
-      quantity: number;
-      price: number;
-    }
-  ];
-  quantity: number;
-  total: number;
-};
 
-export async function saveOrder({
-  userId,
-  address,
-  contact,
-  products,
-  quantity,
-  total,
-}: any) {
-  const order = await prisma.order.create({
-    data: {
+export async function getAllOrders() {
+  const orders = await prisma.order.findMany({
+    select: {
+      id: true,
       user: {
-        connect: {
-          id: userId,
+        select: {
+          id: true,
+          name: true,
+          email: true,
         },
       },
-      address: "Bhara Kahu",
-      contact: "03125770904",
-      quantity: 5,
-      total: 4.56,
+      trxId: true,
+      address: true,
+      contact: true,
+      orderProducts: {
+        include: {
+          orderProductExtras: true,
+        },
+      },
+      quantity: true,
+      total: true,
+      orderType: true,
+      orderStatus: true,
+      isPaid: true,
     },
   });
-  await prisma.$transaction(async (prisma) => {
-    for (const product of products) {
-      try {
-        const createdProduct = await prisma.orderProduct.create({
-          data: {
-            orderId: order.id,
-            productId: product.productId,
-            quantity: product.quantity,
-            price: product.price,
-          },
-        });
-        await prisma.order.update({
-          where: { id: order.id },
-          data: {
-            orderProducts: {
-              connect: {
-                id: createdProduct.id,
-              },
-            },
-          },
-        });
-        for (const extra of product.extras) {
-          try {
-            const orderProductExtras = await prisma.orderProductExtras.create({
-              data: {
-                orderProductId: createdProduct.id,
-                extrasId: extra.id,
-                quantity: extra.quantity,
-                price: extra.price,
-              },
-            });
-            await prisma.orderProduct.update({
-              where: {
-                id: createdProduct.id,
-              },
-              data: {
-                orderProductExtras: {
-                  connect: {
-                    id: orderProductExtras.id,
-                  },
-                },
-              },
-            });
-            return order;
-          } catch (error) {
-            console.log(error);
-            return { error: "Internal server error" };
-          }
-        }
-      } catch (error) {
-        return { error: "Internal server error" };
-      }
-    }
+  return orders;
+}
+
+export async function getUserOrder(userId: string) {
+  const order = await prisma.order.findMany({
+    where: { userId },
+    select: {
+      id: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      trxId: true,
+      address: true,
+      contact: true,
+      orderProducts: {
+        include: {
+          orderProductExtras: true,
+        },
+      },
+      quantity: true,
+      total: true,
+      orderType: true,
+      orderStatus: true,
+      isPaid: true,
+    },
   });
+  if (!order) {
+    return null;
+  }
+  return order;
 }

@@ -1,5 +1,6 @@
 import { getDataByCategory } from "@/app/actions/categories/categories";
 import { getAllExtras } from "@/app/actions/extras/extras";
+import { getAllOrders } from "@/app/actions/orders/orders";
 import { getAllProducts } from "@/app/actions/product/product";
 import TopCard from "@/components/cards/TopCard";
 import PieChart from "@/components/charts/PieChart";
@@ -22,6 +23,13 @@ export default async function AdminDashboard() {
   const categories = await getDataByCategory("all");
   const products = await getAllProducts();
   const extras = await getAllExtras();
+  const orders = await getAllOrders();
+  const pendingOrders = orders.filter(
+    (order) => order.orderStatus === "pending"
+  );
+  const completedOrders = orders.filter(
+    (order) => order.orderStatus === "completed"
+  );
   return (
     <div className="w-full">
       {/* TOP CONTAINER */}
@@ -54,14 +62,16 @@ export default async function AdminDashboard() {
         />
       </div>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-12 h-[350px] gap-4">
-        <div className=" bg-white col-span-12 lg:col-span-8 shadow-md rounded-md">
-          {/* <p className="p-2 text-xl font-bold text-primary">Calculations</p> */}
+        {/* <div className=" bg-white col-span-12 lg:col-span-8 shadow-md rounded-md">
           <PieChart
             categoryLength={categories.length}
             itemsLength={products.length}
             extrasLength={extras.length}
+            totalOrders={orders.length}
+            pendingOrders={pendingOrders.length}
+            completedOrders={completedOrders.length}
           />
-        </div>
+        </div> */}
         <div className="hidden lg:col-span-4 bg-white rounded-md shadow-md lg:flex justify-center items-center">
           <div className="relative w-[100%] h-full">
             <Image
