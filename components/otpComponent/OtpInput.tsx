@@ -51,7 +51,12 @@ export default function OtpInput({ handleOTP }: any) {
                 <FormItem>
                   <FormLabel>Enter your OTP</FormLabel>
                   <FormControl>
-                    <Input maxLength={6} placeholder="000000" {...field} />
+                    <Input
+                      autoFocus
+                      maxLength={6}
+                      placeholder="000000"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                   <FormDescription>

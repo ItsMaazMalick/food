@@ -156,7 +156,7 @@ export async function getAdmin(token: string) {
 
 export async function updateAdmin(formData: FormData) {
   const name = String(formData.get("name"));
-  const image = formData.get("image") as File;
+  const image = String(formData.get("image"));
   const id = String(formData.get("id"));
   if (!id || !name) {
     return {
@@ -177,8 +177,8 @@ export async function updateAdmin(formData: FormData) {
   }
 
   let imageUrl;
-  if (image && image.name) {
-    imageUrl = await convertToBase64(image);
+  if (image) {
+    imageUrl = image;
   } else {
     imageUrl = String(formData.get("imageUrl"));
   }

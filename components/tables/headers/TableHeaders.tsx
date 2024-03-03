@@ -212,3 +212,75 @@ export const ExtrasHeader: ColumnDef<any>[] = [
     ),
   },
 ];
+
+export const OrdersHeader: ColumnDef<any>[] = [
+  {
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "trxId",
+    header: ({ column }) => {
+      return (
+        <div
+          className="flex items-center justify-start cursor-pointer"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          TRX ID
+          <ArrowUpDown size={15} className="ml-1" />
+        </div>
+      );
+    },
+    cell: ({ row }) => <div className="font-bold">{row.getValue("trxId")}</div>,
+  },
+  {
+    accessorKey: "address",
+    header: "Address",
+    cell: ({ row }) => <div>{row.getValue("address")}</div>,
+  },
+  {
+    accessorKey: "contact",
+    header: "Contact",
+    cell: ({ row }) => <div>{row.getValue("contact")}</div>,
+  },
+  {
+    accessorKey: "orderType",
+    header: "Order Type",
+    cell: ({ row }) => <div>{row.getValue("orderType")}</div>,
+  },
+  {
+    accessorKey: "orderStatus",
+    header: "Order Status",
+    cell: ({ row }) => <div>{row.getValue("orderStatus")}</div>,
+  },
+  {
+    accessorKey: "isPaid",
+    header: "Payment Status",
+    cell: ({ row }) => (
+      <div>
+        {row.getValue("isPaid") ? (
+          <span className="text-green-600">paid</span>
+        ) : (
+          <span className="text-destructive">pending</span>
+        )}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "actions",
+    header: ({ column }) => <div className="text-end">Action</div>,
+    cell: ({ row }) => (
+      <div className="flex items-center gap-4 justify-end">
+        <Link href={`/admin/dashboard/extras/edit-extras/${row.original.id}`}>
+          <Button size={"xs"}>Edit</Button>
+        </Link>
+        <AlertComponent
+          target="extras"
+          id={row.original.id}
+          path="/admin/dashboard"
+        />
+      </div>
+    ),
+  },
+];

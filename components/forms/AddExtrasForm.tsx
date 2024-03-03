@@ -9,16 +9,17 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import ImageInput from "../Inputs/ImageInput";
+import UploadButtonComponent from "@/utils/UploadButtonComponent";
 
 const formSchema = extrasSchema;
 
 export default function AddExtrasForm() {
+  const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      image: undefined,
       price: 0,
     },
   });
@@ -27,11 +28,12 @@ export default function AddExtrasForm() {
     setError("");
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("image", values.image as File);
+    formData.append("image", image);
     formData.append("price", String(values.price));
 
     const result = await createExtras(formData);
     form.reset();
+    setImage("");
     if (result) {
       setError(result?.message);
     }
@@ -44,7 +46,10 @@ export default function AddExtrasForm() {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
               <TextInput label="Item Name" name="name" control={form.control} />
-              <ImageInput label="Image" name="image" control={form.control} />
+              {/* <ImageInput label="Image" name="image" control={form.control} /> */}
+              <div className="mt-8">
+                <UploadButtonComponent image={image} setImage={setImage} />
+              </div>
               <TextInput
                 label="Price"
                 name="price"
@@ -61,6 +66,7 @@ export default function AddExtrasForm() {
           <div className="mt-4">
             <FormSubmitButton
               title="Add"
+              disabled={!image}
               loading={form.formState.isSubmitting}
             />
           </div>

@@ -13,7 +13,6 @@ export async function getAllProducts() {
 export async function createProduct(formData: FormData) {
   const validatedFields = productSchema.safeParse({
     name: String(formData.get("name")),
-    image: formData.get("image") as File,
     categoryId: String(formData.get("categoryId")),
     inStock: Number(formData.get("inStock")),
     originalPrice: Number(formData.get("originalPrice")),
@@ -21,8 +20,9 @@ export async function createProduct(formData: FormData) {
     featured: formData.get("featured"),
     isRecommended: formData.get("isRecommended"),
   });
-  if (!validatedFields.success) {
-    console.log(validatedFields.error.flatten().fieldErrors);
+  const image = String(formData.get("image"));
+  if (!validatedFields.success || !image) {
+    // console.log(validatedFields.error.flatten().fieldErrors);
     return {
       status: 401,
       success: false,
@@ -32,7 +32,6 @@ export async function createProduct(formData: FormData) {
   }
   const {
     name,
-    image,
     categoryId,
     inStock,
     originalPrice,
@@ -44,15 +43,13 @@ export async function createProduct(formData: FormData) {
   const extras = extrasString ? extrasString.split(",") : [];
   // console.log(extras);
 
-  const imageUrl = await convertToBase64(image);
-
   let product;
 
   if (!extrasString) {
     product = await prisma.product.create({
       data: {
         name,
-        image: imageUrl!,
+        image,
         inStock,
         originalPrice,
         salePrice,
@@ -69,7 +66,7 @@ export async function createProduct(formData: FormData) {
     product = await prisma.product.create({
       data: {
         name,
-        image: imageUrl!,
+        image,
         inStock,
         originalPrice,
         salePrice,

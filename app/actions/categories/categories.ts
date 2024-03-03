@@ -14,9 +14,9 @@ import { redirect } from "next/navigation";
 export async function createCategory(formData: FormData) {
   const validatedFields = createCategorySchema.safeParse({
     name: String(formData.get("name")),
-    image: formData.get("image") as File,
   });
-  if (!validatedFields.success) {
+  const image = String(formData.get("image"));
+  if (!validatedFields.success || !image) {
     return {
       status: 401,
       success: false,
@@ -24,7 +24,7 @@ export async function createCategory(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  const { name, image } = validatedFields.data;
+  const { name } = validatedFields.data;
   const slug = toSlug(name);
   const oldCategory = await prisma.category.findUnique({
     where: { slug },
@@ -39,13 +39,11 @@ export async function createCategory(formData: FormData) {
     };
   }
 
-  const imageUrl = await convertToBase64(image);
-
   const category = await prisma.category.create({
     data: {
       name,
       slug,
-      image: imageUrl!,
+      image,
     },
   });
   if (!category) {
@@ -122,8 +120,8 @@ export async function getSingleCategory(id: string) {
 export async function updateCategory(formData: FormData) {
   const categoryId = String(formData.get("categoryId"));
   const name = String(formData.get("name"));
-  const image = formData.get("image") as File;
-  const validatedFields = updateCategorySchema.safeParse({ name, image });
+  const image = String(formData.get("image"));
+  const validatedFields = updateCategorySchema.safeParse({ name });
   if (!validatedFields.success || !categoryId) {
     // console.log(validatedFields.error.flatten().fieldErrors);
     return {
@@ -147,8 +145,8 @@ export async function updateCategory(formData: FormData) {
   const slug = toSlug(name);
 
   let imageUrl;
-  if (image && image.name) {
-    imageUrl = await convertToBase64(image);
+  if (image) {
+    imageUrl = image;
   } else {
     imageUrl = String(formData.get("imageUrl"));
   }
@@ -158,7 +156,7 @@ export async function updateCategory(formData: FormData) {
     data: {
       name,
       slug,
-      image: imageUrl!,
+      image: imageUrl,
     },
   });
   if (!newCategory) {

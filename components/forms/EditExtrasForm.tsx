@@ -10,16 +10,17 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import ImageInput from "../Inputs/ImageInput";
+import UploadButtonComponent from "@/utils/UploadButtonComponent";
 
 const formSchema = editExtrasSchema;
 
 export default function EditExtrasForm({ extras }: any) {
+  const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: extras.name,
-      image: undefined,
       price: extras.price,
     },
   });
@@ -28,7 +29,7 @@ export default function EditExtrasForm({ extras }: any) {
     if (
       extras.name === values.name &&
       extras.price === values.price &&
-      values.image === undefined
+      !image
     ) {
       setError("Nothing changed");
     } else {
@@ -37,11 +38,11 @@ export default function EditExtrasForm({ extras }: any) {
       formData.append("name", values.name);
       formData.append("price", String(values.price));
       formData.append("id", extras.id);
-      formData.append("image", values.image as File);
+      formData.append("image", image);
       formData.append("imageUrl", extras.image);
 
       const result = await updateExtras(formData);
-
+      setImage("");
       form.reset();
       if (result) {
         setError(result?.message);
@@ -55,7 +56,10 @@ export default function EditExtrasForm({ extras }: any) {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
             <TextInput label="Item Name" name="name" control={form.control} />
-            <ImageInput label="Image" name="image" control={form.control} />
+            {/* <ImageInput label="Image" name="image" control={form.control} /> */}
+            <div className="mt-8">
+              <UploadButtonComponent image={image} setImage={setImage} />
+            </div>
             <TextInput
               label="Price"
               name="price"

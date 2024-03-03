@@ -1,4 +1,10 @@
-import { Boxes, DoorOpen, LayoutDashboard, ShoppingBasket } from "lucide-react";
+import {
+  BaggageClaim,
+  Boxes,
+  DoorOpen,
+  LayoutDashboard,
+  ShoppingBasket,
+} from "lucide-react";
 
 export const navLinks = [
   {
@@ -20,5 +26,10 @@ export const navLinks = [
     title: "Extras",
     href: "/admin/dashboard/extras",
     icon: <DoorOpen size={18} />,
+  },
+  {
+    title: "Orders",
+    href: "/admin/dashboard/orders",
+    icon: <BaggageClaim size={18} />,
   },
 ];

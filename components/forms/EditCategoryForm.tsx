@@ -32,28 +32,28 @@ import ImageInput from "../Inputs/ImageInput";
 const formSchema = updateCategorySchema;
 
 export default function EditCategoryForm({ category }: any) {
+  const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: category.name,
-      image: undefined,
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (category.name === values.name && values.image === undefined) {
-      setError("Nothing changed");
+    setError("");
+    if (values.name === category.name && !image) {
+      setError("Please update first");
     } else {
-      setError("");
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("categoryId", category.id);
-      formData.append("image", values.image as File);
+      formData.append("image", image);
       formData.append("imageUrl", category.image);
 
       const result = await updateCategory(formData);
-      // setImage("");
+      setImage("");
       form.reset();
       if (result) {
         setError(result?.message);
@@ -66,8 +66,9 @@ export default function EditCategoryForm({ category }: any) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
             <TextInput label="Category" name="name" control={form.control} />
-
-            <ImageInput label="Image" name="image" control={form.control} />
+            <div className="mt-8">
+              <UploadButtonComponent image={image} setImage={setImage} />
+            </div>
             <div className="relative w-[100%] h-56 md:h-64 lg:h-40">
               <Image
                 src={category.image}

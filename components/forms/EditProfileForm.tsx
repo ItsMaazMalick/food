@@ -15,17 +15,6 @@ import ImageInput from "../Inputs/ImageInput";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  image: z
-    .custom<File | undefined>((file) => {
-      return file; // Return true if file is undefined
-    })
-    .refine(
-      (file) => {
-        return !file || file.size < 1024 * 1024 * 2;
-      },
-      { message: "File must be less than 2MB" }
-    )
-    .optional(),
 });
 
 type PageProps = {
@@ -33,6 +22,7 @@ type PageProps = {
 };
 
 export default function EditProfileForm({ admin }: PageProps) {
+  const [image, setImage] = useState("");
   const [imgSrc, setImgSrc] = useState(
     admin.image !== "null" ? admin.image : "/images/logo.jpeg"
   );
@@ -42,7 +32,6 @@ export default function EditProfileForm({ admin }: PageProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: admin.name,
-      image: undefined,
     },
   });
 
@@ -51,7 +40,7 @@ export default function EditProfileForm({ admin }: PageProps) {
     const formData = new FormData();
     formData.append("name", values.name);
     // formData.append("email", values.email);
-    formData.append("image", values.image as File);
+    formData.append("image", image);
     formData.append("imageUrl", admin.image);
     formData.append("id", admin.id);
 
@@ -72,7 +61,10 @@ export default function EditProfileForm({ admin }: PageProps) {
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-2 bg-white rounded-md gap-4">
               <TextInput label="Name" name="name" control={form.control} />
-              <ImageInput label="Image" name="image" control={form.control} />
+              {/* <ImageInput label="Image" name="image" control={form.control} /> */}
+              <div className="mt-8">
+                <UploadButtonComponent image={image} setImage={setImage} />
+              </div>
               <div className="relative h-48">
                 <Image
                   src={imgSrc}

@@ -33,14 +33,14 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const data: RequestData = await request.json();
-    const token = await verifyUserToken();
-    if (!token) {
-      return NextResponse.json({
-        status: 401,
-        success: false,
-        message: "Invalid request",
-      });
-    }
+    // const token = await verifyUserToken();
+    // if (!token) {
+    //   return NextResponse.json({
+    //     status: 401,
+    //     success: false,
+    //     message: "Invalid request",
+    //   });
+    // }
     const isDuplicate = await prisma.order.findUnique({
       where: { trxId: data.trxId },
     });
@@ -54,11 +54,7 @@ export async function POST(request: NextRequest) {
 
     const order = await prisma.order.create({
       data: {
-        user: {
-          connect: {
-            id: data.userId,
-          },
-        },
+        userId: data.userId,
         trxId: data.trxId,
         address: "Bhara Kahu",
         contact: "03125770904",

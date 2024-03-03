@@ -17,6 +17,7 @@ type PageProps = {
     | null
     | undefined;
   size?: "default" | "xs" | "sm" | "lg" | "icon" | null | undefined;
+  disabled?: boolean;
 };
 
 export default function FormSubmitButton({
@@ -24,6 +25,7 @@ export default function FormSubmitButton({
   loading,
   variant,
   size,
+  disabled,
 }: PageProps) {
   const { pending } = useFormStatus();
   return (
@@ -33,9 +35,9 @@ export default function FormSubmitButton({
       type="submit"
       aria-disabled={pending || loading}
       size={size}
-      disabled={pending || loading}
+      disabled={disabled || pending || loading}
     >
-      {(pending || loading) && (
+      {!disabled && (pending || loading) && (
         <Loader2 size={18} className="animate-spin mr-1" />
       )}
       {title}

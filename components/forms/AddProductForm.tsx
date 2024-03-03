@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import UploadButtonComponent from "@/utils/UploadButtonComponent";
 
 const formSchema = productSchema;
 
@@ -36,13 +37,13 @@ type PageProps = {
 };
 
 export default function AddProductForm({ categories, extras }: PageProps) {
+  const [image, setImage] = useState("");
   const [selectedExtras, setSelectedExtras] = useState<string[]>();
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      image: undefined,
       categoryId: "",
       inStock: 0,
       originalPrice: 0,
@@ -57,7 +58,7 @@ export default function AddProductForm({ categories, extras }: PageProps) {
     setError("");
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("image", values.image as File);
+    formData.append("image", image);
     formData.append("categoryId", values.categoryId);
     formData.append("inStock", String(values.inStock));
     formData.append("originalPrice", String(values.originalPrice));
@@ -69,6 +70,7 @@ export default function AddProductForm({ categories, extras }: PageProps) {
     //   formData.append("extras", selectedExtras.join(","));
     // }
     const result = await createProduct(formData);
+    setImage("");
     form.reset();
     if (result) {
       setError(result?.message);
@@ -92,7 +94,10 @@ export default function AddProductForm({ categories, extras }: PageProps) {
                 control={form.control}
                 items={categories}
               />
-              <ImageInput label="Image" name="image" control={form.control} />
+              {/* <ImageInput label="Image" name="image" control={form.control} /> */}
+              <div className="mt-7">
+                <UploadButtonComponent image={image} setImage={setImage} />
+              </div>
               <TextInput
                 label="In Stock"
                 name="inStock"
@@ -172,7 +177,11 @@ export default function AddProductForm({ categories, extras }: PageProps) {
               {error}
             </div>
           )}
-          <FormSubmitButton title="Add" loading={form.formState.isSubmitting} />
+          <FormSubmitButton
+            title="Add"
+            disabled={!image}
+            loading={form.formState.isSubmitting}
+          />
         </form>
       </Form>
     </div>

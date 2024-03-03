@@ -15,10 +15,10 @@ export async function getAllExtras() {
 export async function createExtras(formData: FormData) {
   const validatedFields = extrasSchema.safeParse({
     name: String(formData.get("name")),
-    image: formData.get("image") as File,
     price: Number(formData.get("price")),
   });
-  if (!validatedFields.success) {
+  const image = String(formData.get("image"));
+  if (!validatedFields.success || !image) {
     return {
       status: 401,
       success: false,
@@ -26,14 +26,12 @@ export async function createExtras(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  const { name, image, price } = validatedFields.data;
-
-  const imageUrl = await convertToBase64(image);
+  const { name, price } = validatedFields.data;
 
   const extras = await prisma.extras.create({
     data: {
       name,
-      image: imageUrl!,
+      image,
       price,
     },
   });
@@ -126,9 +124,9 @@ export async function getSingleExtras(id: string) {
 export async function updateExtras(formData: FormData) {
   const validatedFields = editExtrasSchema.safeParse({
     name: String(formData.get("name")),
-    image: formData.get("image") as File,
     price: Number(formData.get("price")),
   });
+  const image = String(formData.get("image"));
   const id = String(formData.get("id"));
   if (!validatedFields.success || !id) {
     return {
@@ -147,11 +145,11 @@ export async function updateExtras(formData: FormData) {
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  const { name, image, price } = validatedFields.data;
+  const { name, price } = validatedFields.data;
 
   let imageUrl;
-  if (image && image.name) {
-    imageUrl = await convertToBase64(image);
+  if (image) {
+    imageUrl = image;
   } else {
     imageUrl = String(formData.get("imageUrl"));
   }
@@ -160,7 +158,7 @@ export async function updateExtras(formData: FormData) {
     where: { id },
     data: {
       name,
-      image: imageUrl!,
+      image: imageUrl,
       price,
     },
   });

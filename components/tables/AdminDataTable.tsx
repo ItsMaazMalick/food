@@ -32,6 +32,7 @@ import {
   CategoriesHeader,
   ExtrasHeader,
   ItemsHeader,
+  OrdersHeader,
 } from "./headers/TableHeaders";
 
 type PageProps = {
@@ -48,7 +49,13 @@ export default function AdminDataTable({ data, index }: PageProps) {
   const table = useReactTable({
     data: data,
     columns:
-      index === 1 ? CategoriesHeader : index === 2 ? ItemsHeader : ExtrasHeader,
+      index === 1
+        ? CategoriesHeader
+        : index === 2
+        ? ItemsHeader
+        : index === 3
+        ? ExtrasHeader
+        : OrdersHeader,
 
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

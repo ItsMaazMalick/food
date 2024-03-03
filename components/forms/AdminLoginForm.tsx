@@ -61,6 +61,7 @@ export default function AdminLoginForm() {
               name="email"
               type="email"
               placeholder="example@gmail.com"
+              autoFocus
               control={form.control}
             />
             <TextInput

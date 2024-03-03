@@ -13,6 +13,7 @@ type TextInputProps = {
   name: string;
   type?: string;
   placeholder?: string;
+  autoFocus?: boolean;
 };
 
 export default function TextInput({
@@ -21,6 +22,7 @@ export default function TextInput({
   name,
   type,
   placeholder,
+  autoFocus,
 }: TextInputProps) {
   return (
     <FormField
@@ -31,6 +33,7 @@ export default function TextInput({
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <Input
+              autoFocus
               type={type ? type : "text"}
               placeholder={placeholder ? placeholder : label}
               {...field}
