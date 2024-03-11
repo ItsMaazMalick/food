@@ -30,6 +30,12 @@ export default async function AdminDashboard() {
   const completedOrders = orders.filter(
     (order) => order.orderStatus === "completed"
   );
+  const revenueArray = orders.filter((order) => order.isPaid === true);
+  const totalRevenue = revenueArray.reduce(
+    (sum, order) => sum + order.total,
+    0
+  );
+  const revenue = parseFloat(totalRevenue.toFixed(2));
   return (
     <div className="w-full">
       {/* TOP CONTAINER */}
@@ -48,18 +54,14 @@ export default async function AdminDashboard() {
         <TopCard
           title="Completed"
           icon={<ListChecks />}
-          length={categories.length}
+          length={completedOrders.length}
         />
         <TopCard
           title="Pending"
           icon={<LayoutList />}
-          length={categories.length}
+          length={pendingOrders.length}
         />
-        <TopCard
-          title="Revenue"
-          icon={<DollarSign />}
-          length={categories.length}
-        />
+        <TopCard title="Revenue" icon={<DollarSign />} length={revenue} />
       </div>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-12 h-[350px] gap-4">
         <div className=" bg-white col-span-12 lg:col-span-8 shadow-md rounded-md">

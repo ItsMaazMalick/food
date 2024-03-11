@@ -6,6 +6,16 @@ export async function getAllOrders() {
   return orders;
 }
 
+export async function getOrder(orderId: string) {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+  });
+  if (!order) {
+    return null;
+  }
+  return order;
+}
+
 export async function getUserOrder(userId: string) {
   const order = await prisma.order.findMany({
     where: { userId },

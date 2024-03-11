@@ -59,10 +59,6 @@ export async function loginUser({
       message: "Invalid credentials",
     };
   }
-  // Getting User IP
-  const res = await fetch("https://ipapi.co/json/", { cache: "no-store" });
-  const data = await res.json();
-  console.log(data.ip);
 
   //TOKEN DATA
   const tokenData = {
@@ -163,6 +159,16 @@ export async function registerUser({
 export async function getUserByEmail(email: string) {
   const user = await prisma.user.findUnique({
     where: { email },
+  });
+  if (!user) {
+    return null;
+  }
+  return user;
+}
+
+export async function getUserById(id: string) {
+  const user = await prisma.user.findUnique({
+    where: { id },
   });
   if (!user) {
     return null;

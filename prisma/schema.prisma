@@ -78,7 +78,8 @@ model Order {
   id            String         @id @default(auto()) @map("_id") @db.ObjectId
   user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String         @db.ObjectId
-  trxId         String         @unique
+  name          String
+  trxId         String?
   address       String
   contact       String
   orderProducts OrderProduct[]
@@ -118,7 +119,7 @@ model OrderProductExtras {
 
 enum OrderStatus {
   pending
-  prepairing
+  preparing
   ready
   completed
 }
