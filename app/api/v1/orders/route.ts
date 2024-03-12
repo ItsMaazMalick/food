@@ -1,6 +1,7 @@
 import { getOrder } from "@/app/actions/orders/orders";
 import { getUserById } from "@/app/actions/user/auth";
 import { verifyUserToken } from "@/app/actions/user/userToken";
+import { codeGenerator, numberGenerator } from "@/lib/codeGenerator";
 import prisma from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -74,9 +75,18 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    let orderNumber = numberGenerator(15);
+    const isOrder = await prisma.order.findUnique({
+      where: { orderNo: orderNumber },
+    });
+    if (isOrder) {
+      orderNumber = numberGenerator(15);
+    }
+
     const order = await prisma.order.create({
       data: {
         userId: data.userId,
+        orderNo: orderNumber,
         name: data.name,
         trxId: data.trxId,
         address: data.address,
@@ -121,7 +131,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       status: 200,
       success: true,
-      message: "Order placed",
+      orderNo: order.orderNo,
     });
   } catch (error) {
     console.log(error);
