@@ -6,7 +6,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 type ProductExtra = {
   id: string;
-  name: string;
   quantity: number;
   price: number;
 };
