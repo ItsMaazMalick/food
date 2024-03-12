@@ -1,42 +1,20 @@
 "use client";
-import { createProduct } from "@/app/actions/product/product";
+import { updateProduct } from "@/app/actions/product/product";
 import TextInput from "@/components/Inputs/TextInput";
 import FormSubmitButton from "@/components/button/FormSubmitButton";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import {
-  editProductSchema,
-  productSchema,
-} from "@/lib/validations/productSchema";
-import UploadButtonComponent from "@/utils/UploadButtonComponent";
+import { Form } from "@/components/ui/form";
+import { editProductSchema } from "@/lib/validations/productSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import MultiSelectInput from "../Inputs/MultiSelectInput";
-import SelectInput from "../Inputs/SelectInput";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
-import Image from "next/image";
-import ImageInput from "../Inputs/ImageInput";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import DisableInput from "../Inputs/DisableInput";
+import ImageInput from "../Inputs/ImageInput";
+import SelectInput from "../Inputs/SelectInput";
 import SelectwithArray from "../Inputs/SelectwithArray";
-import DefaultValue from "../Inputs/DefaultValue";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 const formSchema = editProductSchema;
 
@@ -52,21 +30,19 @@ export default function EditProductForm({
   product,
 }: PageProps) {
   const [image, setImage] = useState("");
-  const [selectedExtras, setSelectedExtras] = useState<string[]>();
+  const [selectedExtras, setSelectedExtras] = useState<string[]>(
+    product.extrasId || []
+  );
   const [error, setError] = useState("");
   const [defCat, setDefCat] = useState(
     categories.find((cat: any) => cat.id === product.categoryId)?.name
   );
 
-  useEffect(() => {
-    alert("Note: Please add extras from scratch");
-  }, []);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: product.name,
-      categoryId: "123",
+      categoryId: "",
       inStock: product.inStock,
       originalPrice: product.originalPrice,
       salePrice: product.salePrice,
@@ -75,21 +51,22 @@ export default function EditProductForm({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(selectedExtras);
     setError("");
     const formData = new FormData();
+    formData.append("id", product.id);
     formData.append("name", values.name);
     formData.append("image", image);
+    formData.append("imageUrl", product.image);
     formData.append("categoryId", values.categoryId);
     formData.append("inStock", String(values.inStock));
     formData.append("originalPrice", String(values.originalPrice));
     formData.append("salePrice", String(values.salePrice));
     formData.append("featured", values.featured);
-    formData.append("extras", selectedExtras ? selectedExtras.join(",") : "");
+    formData.append("extras", selectedExtras.join(","));
     // if (selectedExtras) {
     //   formData.append("extras", selectedExtras.join(","));
     // }
-    const result = await createProduct(formData);
+    const result = await updateProduct(formData);
     form.reset();
     form.reset();
     if (result) {
@@ -97,8 +74,13 @@ export default function EditProductForm({
     }
   }
 
-  const handleExtrasSelectionChange = (selectedIds: string[]) => {
-    setSelectedExtras(selectedIds);
+  const handleChange = (extraId: string) => {
+    // Toggle the extra ID in the selected array
+    setSelectedExtras((prevSelected) =>
+      prevSelected.includes(extraId)
+        ? prevSelected.filter((id) => id !== extraId)
+        : [...prevSelected, extraId]
+    );
   };
 
   return (
@@ -145,7 +127,6 @@ export default function EditProductForm({
                 label="Recommended"
                 placeholder={product.isRecommended ? "YES" : "NO"}
               />
-              <DefaultValue data={extras} />
               <SelectwithArray
                 label="Featured"
                 name="featured"
@@ -158,13 +139,6 @@ export default function EditProductForm({
                 control={form.control}
                 items={["FALSE", "TRUE"]}
               />
-              <MultiSelectInput
-                label="Extras"
-                name="extras"
-                data={extras}
-                onSelectionChange={handleExtrasSelectionChange}
-                description="Note: Please add extras from scratch"
-              />
               <div className="relative w-[100%] h-56 md:h-64 lg:h-40">
                 <Image
                   src={product.image}
@@ -174,16 +148,38 @@ export default function EditProductForm({
                 />
               </div>
             </div>
+            <h3 className="text-xl font-bold text-primary">Extras</h3>
+            <div className="flex items-center gap-2">
+              {extras.map((extra: any, index: number) => (
+                <div
+                  key={extra.id}
+                  className="flex items-center gap-1 rounded-md ring-[1px] p-1"
+                >
+                  <Input
+                    onChange={() => handleChange(extra.id)}
+                    defaultChecked={product.extrasId?.includes(extra.id)}
+                    // checked={product.extrasId?.includes(extra.id)}
+                    value={extra.id}
+                    className="w-4 h-4 mr-1"
+                    id={extra.id}
+                    type="checkbox"
+                  />
+                  <Label className="mr-2">{extra.name}</Label>
+                </div>
+              ))}
+            </div>
           </div>
           {error && (
             <div className="my-2 text-center text-destructive font-bold text-sm">
               {error}
             </div>
           )}
-          <FormSubmitButton
-            title="Update"
-            loading={form.formState.isSubmitting}
-          />
+          <div className="mt-4">
+            <FormSubmitButton
+              title="Update"
+              loading={form.formState.isSubmitting}
+            />
+          </div>
         </form>
       </Form>
     </div>

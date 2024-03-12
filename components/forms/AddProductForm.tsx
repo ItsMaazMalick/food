@@ -11,13 +11,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { productSchema } from "@/lib/validations/productSchema";
+import UploadButtonComponent from "@/utils/UploadButtonComponent";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import ImageInput from "../Inputs/ImageInput";
-import MultiSelectInput from "../Inputs/MultiSelectInput";
 import SelectInput from "../Inputs/SelectInput";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import {
   Select,
   SelectContent,
@@ -27,7 +28,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import UploadButtonComponent from "@/utils/UploadButtonComponent";
 
 const formSchema = productSchema;
 
@@ -38,7 +38,8 @@ type PageProps = {
 
 export default function AddProductForm({ categories, extras }: PageProps) {
   const [image, setImage] = useState("");
-  const [selectedExtras, setSelectedExtras] = useState<string[]>();
+  const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
+
   const [error, setError] = useState("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,7 +66,7 @@ export default function AddProductForm({ categories, extras }: PageProps) {
     formData.append("salePrice", String(values.salePrice));
     formData.append("featured", values.featured);
     formData.append("isRecommended", values.isRecommended);
-    formData.append("extras", selectedExtras ? selectedExtras.join(",") : "");
+    formData.append("extras", selectedExtras.join(","));
     // if (selectedExtras) {
     //   formData.append("extras", selectedExtras.join(","));
     // }
@@ -79,6 +80,24 @@ export default function AddProductForm({ categories, extras }: PageProps) {
 
   const handleExtrasSelectionChange = (selectedIds: string[]) => {
     setSelectedExtras(selectedIds);
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const isChecked = e.target.checked;
+    const extraId = e.target.value;
+
+    if (isChecked) {
+      // Add the extra ID to the selected array
+      setSelectedExtras((prevSelected) => [...prevSelected, extraId]);
+    } else {
+      // Remove the extra ID from the selected array
+      setSelectedExtras((prevSelected) =>
+        prevSelected.filter((id) => id !== extraId)
+      );
+    }
   };
 
   return (
@@ -164,12 +183,28 @@ export default function AddProductForm({ categories, extras }: PageProps) {
                   </FormItem>
                 )}
               />
-              <MultiSelectInput
+
+              {/* <MultiSelectInput
                 label="Extras"
                 name="extras"
                 data={extras}
                 onSelectionChange={handleExtrasSelectionChange}
-              />
+              /> */}
+            </div>
+            <h3 className="text-xl font-bold text-primary">Extras</h3>
+            <div className="flex items-center">
+              {extras.map((extra: any, index: number) => (
+                <div key={extra.id} className="flex items-center gap-1">
+                  <Input
+                    onChange={(e: any) => handleChange(e, index)}
+                    value={extra.id}
+                    className="w-4 h-4 mr-1"
+                    id={index.toString()}
+                    type="checkbox"
+                  />
+                  <Label className="mr-2">{extra.name}</Label>
+                </div>
+              ))}
             </div>
           </div>
           {error && (
@@ -177,11 +212,13 @@ export default function AddProductForm({ categories, extras }: PageProps) {
               {error}
             </div>
           )}
-          <FormSubmitButton
-            title="Add"
-            disabled={!image}
-            loading={form.formState.isSubmitting}
-          />
+          <div className="mt-4">
+            <FormSubmitButton
+              title="Add"
+              disabled={!image}
+              loading={form.formState.isSubmitting}
+            />
+          </div>
         </form>
       </Form>
     </div>
