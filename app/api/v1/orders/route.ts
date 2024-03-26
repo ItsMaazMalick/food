@@ -22,7 +22,7 @@ type RequestData = {
   userId: string;
   name: string;
   trxId?: string;
-  address: string;
+  address?: string;
   contact: string;
   products: Product[];
   quantity: number;

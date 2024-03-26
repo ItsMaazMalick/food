@@ -11,6 +11,7 @@ export async function POST(request: Request) {
         message: "Invalid data provided",
       });
     }
+
     const res = await registerUser({ name, email, password, referralCode });
     return NextResponse.json(res);
   } catch (error) {

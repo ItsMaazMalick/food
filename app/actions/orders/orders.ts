@@ -33,7 +33,13 @@ export async function getUserOrder(userId: string) {
       contact: true,
       orderProducts: {
         include: {
-          orderProductExtras: true,
+          orderProductExtras: {
+            select: {
+              extrasId: true,
+              price: true,
+              quantity: true,
+            },
+          },
         },
       },
       quantity: true,

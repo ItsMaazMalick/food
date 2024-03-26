@@ -111,7 +111,6 @@ export async function registerUser({
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
-
   const isUser = await prisma.user.findUnique({
     where: { email },
   });
