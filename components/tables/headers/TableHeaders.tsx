@@ -216,23 +216,18 @@ export const ExtrasHeader: ColumnDef<any>[] = [
 export const OrdersHeader: ColumnDef<any>[] = [
   {
     accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "trxId",
     header: ({ column }) => {
       return (
         <div
           className="flex items-center justify-start cursor-pointer"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          TRX ID
+          Name
           <ArrowUpDown size={15} className="ml-1" />
         </div>
       );
     },
-    cell: ({ row }) => <div className="font-bold">{row.getValue("trxId")}</div>,
+    cell: ({ row }) => <div className="font-bold">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "address",
@@ -252,7 +247,25 @@ export const OrdersHeader: ColumnDef<any>[] = [
   {
     accessorKey: "orderStatus",
     header: "Order Status",
-    cell: ({ row }) => <div>{row.getValue("orderStatus")}</div>,
+    cell: ({ row }) => (
+      <div
+        className={`${
+          row.getValue("orderStatus") === "completed" ? "text-green-600" : ""
+        }`}
+      >
+        {row.getValue("orderStatus")}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "total",
+    header: "Price",
+    cell: ({ row }) => (
+      <div className="font-bold">
+        <span className="text-primary">$:&nbsp;</span>
+        {row.getValue("total")}
+      </div>
+    ),
   },
   {
     accessorKey: "isPaid",
@@ -272,13 +285,13 @@ export const OrdersHeader: ColumnDef<any>[] = [
     header: ({ column }) => <div className="text-end">Action</div>,
     cell: ({ row }) => (
       <div className="flex items-center gap-4 justify-end">
-        <Link href={`/admin/dashboard/extras/edit-extras/${row.original.id}`}>
-          <Button size={"xs"}>Edit</Button>
+        <Link href={`/admin/dashboard/orders/order-detail/${row.original.id}`}>
+          <Button size={"xs"}>View</Button>
         </Link>
         <AlertComponent
-          target="extras"
+          target="orders"
           id={row.original.id}
-          path="/admin/dashboard"
+          path="/admin/dashboard/orders"
         />
       </div>
     ),
