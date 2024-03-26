@@ -76,22 +76,23 @@ model User {
 }
 
 model Order {
-  id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String         @db.ObjectId
-  orderNo       String         @unique
-  name          String
-  trxId         String?
-  address       String?
-  contact       String
-  orderProducts OrderProduct[]
-  quantity      Int
-  total         Float
-  orderType     OrderType
-  orderStatus   OrderStatus    @default(pending)
-  isPaid        Boolean
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String         @db.ObjectId
+  orderNo         String         @unique
+  name            String
+  trxId           String?
+  address         String?
+  contact         String
+  orderProducts   OrderProduct[]
+  quantity        Int
+  total           Float
+  orderType       OrderType
+  orderStatus     OrderStatus    @default(pending)
+  isPaid          Boolean
+  isPaidProcessed Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 }
 
 model OrderProduct {
@@ -103,8 +104,6 @@ model OrderProduct {
   orderProductExtras OrderProductExtras[]
   quantity           Int
   price              Float
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
 }
 
 model OrderProductExtras {
@@ -115,8 +114,6 @@ model OrderProductExtras {
   extrasId       String       @db.ObjectId
   quantity       Int
   price          Float
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
 }
 
 enum OrderStatus {

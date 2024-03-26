@@ -21,6 +21,7 @@ export async function SimpleDialog({
   async function handleSubmit(formData: FormData) {
     "use server";
     formData.append("id", data.id);
+    formData.append("userId", data.userId);
     await updateOrder(formData);
   }
 

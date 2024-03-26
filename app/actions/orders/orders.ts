@@ -48,6 +48,8 @@ export async function getUserOrder(userId: string) {
       orderType: true,
       orderStatus: true,
       isPaid: true,
+      createdAt: true,
+      updatedAt: true,
     },
   });
   if (!order) {
@@ -77,9 +79,12 @@ export async function getOrderById(id: string) {
 
 export async function updateOrder(formData: FormData) {
   const id = String(formData.get("id"));
+  const userId = String(formData.get("userId"));
   const orderType = String(formData.get("orderType"));
   const orderStatus = String(formData.get("orderStatus"));
   const isPaid = formData.get("isPaid") === "paid" ? true : false;
+
+  // Update the order
   await prisma.order.update({
     where: { id },
     data: {
@@ -100,6 +105,35 @@ export async function updateOrder(formData: FormData) {
       isPaid,
     },
   });
+
+  // Check if the order is paid and hasn't been processed before
+  if (isPaid) {
+    const order = await prisma.order.findUnique({
+      where: { id },
+    });
+
+    // Ensure the order exists and is not already paid
+    if (order && !order.isPaidProcessed) {
+      // Update the user's order points
+      await prisma.user.update({
+        where: { id: userId },
+        data: {
+          orderPoints: {
+            increment: 5,
+          },
+        },
+      });
+
+      // Mark the order as processed to avoid multiple updates
+      await prisma.order.update({
+        where: { id },
+        data: {
+          isPaidProcessed: true,
+        },
+      });
+    }
+  }
+
   revalidatePath(`/admin/dashboard/orders/order-detail/${id}`);
   redirect("/admin/dashboard/orders");
 }
