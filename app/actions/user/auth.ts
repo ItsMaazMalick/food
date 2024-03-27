@@ -111,6 +111,7 @@ export async function registerUser({
       // errors: validatedFields.error.flatten().fieldErrors,
     };
   }
+
   const isUser = await prisma.user.findUnique({
     where: { email },
   });
@@ -138,15 +139,28 @@ export async function registerUser({
     const oldUser = await prisma.user.findUnique({
       where: { referralCode },
     });
+
     if (oldUser && oldUser.points <= 45) {
-      const referralUser = await prisma.user.update({
+      await prisma.user.update({
         where: { referralCode: referralCode },
         data: {
-          points: oldUser.points + 5,
+          points: {
+            increment: 5, // Increment points by 5 for old user
+          },
         },
       });
     }
   }
+
+  // Increase points for the new user
+  await prisma.user.update({
+    where: { email },
+    data: {
+      points: {
+        increment: 5, // Increment points by 5 for new user
+      },
+    },
+  });
 
   return {
     status: 201,
