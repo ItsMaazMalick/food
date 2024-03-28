@@ -37,15 +37,17 @@ model Product {
   salePrice     Float
   featured      Boolean
   isRecommended Boolean
-  category      Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  couponId      String?        @unique @db.ObjectId
+  coupon        Coupon?        @relation(fields: [couponId], references: [id])
   categoryId    String         @db.ObjectId
+  category      Category       @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   extrasId      String[]       @db.ObjectId
   extras        Extras[]       @relation(fields: [extrasId], references: [id])
   orderProducts OrderProduct[]
+  userId        String?        @db.ObjectId
+  User          User?          @relation(fields: [userId], references: [id])
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  User          User?          @relation(fields: [userId], references: [id])
-  userId        String?        @db.ObjectId
 }
 
 model Extras {
@@ -114,6 +116,34 @@ model OrderProductExtras {
   extrasId       String       @db.ObjectId
   quantity       Int
   price          Float
+}
+
+model ReferralPoints {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  points    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OrderPoints {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  points    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Coupon {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  code          String    @unique
+  description   String?
+  discountPrice Float
+  maxUsageCount Int?
+  usageCount    Int       @default(0)
+  startDate     DateTime?
+  endDate       DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  product       Product?
 }
 
 enum OrderStatus {
