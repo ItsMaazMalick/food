@@ -71,8 +71,8 @@ export async function adminLogin(formData: FormData) {
     process.env.JWT_SECRET!,
     { expiresIn: "1d" }
   );
-  const encryptToken = await encryptString(token);
-  const encryptId = await encryptString(admin.id);
+  const encryptToken = encryptString(token);
+  const encryptId = encryptString(admin.id);
   cookies().set("auth-token", encryptToken);
   cookies().set("user", encryptId);
   redirect("/admin/dashboard");

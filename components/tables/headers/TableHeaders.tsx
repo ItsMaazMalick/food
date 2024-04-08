@@ -1,6 +1,7 @@
 import { deleteCategory } from "@/app/actions/categories/categories";
 import AlertComponent from "@/components/alertDialog/AlertComponent";
 import FormSubmitButton from "@/components/button/FormSubmitButton";
+import { AdminAction } from "@/components/dialog/AdminAction";
 import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, Delete, Edit, FilePenLine, Trash2 } from "lucide-react";
@@ -293,6 +294,147 @@ export const OrdersHeader: ColumnDef<any>[] = [
           id={row.original.id}
           path="/admin/dashboard/orders"
         />
+      </div>
+    ),
+  },
+];
+
+export const OrderProductsDetailHeader: ColumnDef<any>[] = [
+  {
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <div
+          className="flex items-center justify-start cursor-pointer"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown size={15} className="ml-1" />
+        </div>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="font-bold">{row.original.product.name}</div>
+    ),
+  },
+  {
+    accessorKey: "variation",
+    header: "Variation",
+    cell: ({ row }) => (
+      <div className="text-primary font-bold">
+        {row.getValue("variation") ? row.getValue("variation") : "NO"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "quantity",
+    header: "Quantity",
+    cell: ({ row }) => <div>{row.getValue("quantity")}</div>,
+  },
+  {
+    accessorKey: "price",
+    header: "Price",
+    cell: ({ row }) => <div>{row.getValue("price")}</div>,
+  },
+  {
+    accessorKey: "total",
+    header: "Total",
+    cell: ({ row }) => (
+      <div>
+        {parseFloat(row.getValue("price")) *
+          parseFloat(row.getValue("quantity"))}
+      </div>
+    ),
+  },
+];
+
+export const OrderExtrasHeader: ColumnDef<any>[] = [
+  {
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <div
+          className="flex items-center justify-start cursor-pointer"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown size={15} className="ml-1" />
+        </div>
+      );
+    },
+    cell: ({ row }) => (
+      <div className="font-bold">{row.original.product.name}</div>
+    ),
+  },
+
+  {
+    accessorKey: "quantity",
+    header: "Quantity",
+    cell: ({ row }) => <div>{row.getValue("quantity")}</div>,
+  },
+  {
+    accessorKey: "price",
+    header: "Price",
+    cell: ({ row }) => <div>{row.getValue("price")}</div>,
+  },
+];
+
+export const AdminsHeader: ColumnDef<any>[] = [
+  {
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <div
+          className="flex items-center justify-start cursor-pointer"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Name
+          <ArrowUpDown size={15} className="ml-1" />
+        </div>
+      );
+    },
+    cell: ({ row }) => <div className="font-bold">{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "image",
+    header: "Image",
+    cell: ({ row }) => (
+      <div className="relative w-14 h-10">
+        <Image
+          src={row.original.image}
+          alt={row.original.name}
+          fill
+          className="rounded-md object-center"
+        />
+      </div>
+    ),
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => <div>{row.getValue("email")}</div>,
+  },
+  {
+    accessorKey: "isAdmin",
+    header: "Verified",
+    cell: ({ row }) => (
+      <div>
+        {row.getValue("isAdmin") ? (
+          <span className="text-green-600">verified</span>
+        ) : (
+          <span className="text-destructive">pending</span>
+        )}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "actions",
+    header: ({ column }) => <div className="text-end">Action</div>,
+    cell: ({ row }) => (
+      <div className="flex justify-end items-center">
+        <AdminAction data={row.original}>
+          <Button variant={"destructive"}>Update</Button>
+        </AdminAction>
       </div>
     ),
   },

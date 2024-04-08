@@ -65,7 +65,15 @@ export async function getOrderById(id: string) {
       orderProducts: {
         include: {
           product: {
-            select: { name: true },
+            select: {
+              name: true,
+            },
+          },
+          orderProductExtras: {
+            select: {
+              extras: true,
+              quantity: true,
+            },
           },
         },
       },
@@ -114,23 +122,25 @@ export async function updateOrder(formData: FormData) {
 
     // Ensure the order exists and is not already paid
     if (order && !order.isPaidProcessed) {
-      // Update the user's order points
-      await prisma.user.update({
-        where: { id: userId },
-        data: {
-          orderPoints: {
-            increment: 5,
+      const points = await prisma.orderPoints.findFirst();
+      if (points) {
+        // Update the user's order points
+        await prisma.user.update({
+          where: { id: userId },
+          data: {
+            orderPoints: {
+              increment: 5,
+            },
           },
-        },
-      });
-
-      // Mark the order as processed to avoid multiple updates
-      await prisma.order.update({
-        where: { id },
-        data: {
-          isPaidProcessed: true,
-        },
-      });
+        });
+        // Mark the order as processed to avoid multiple updates
+        await prisma.order.update({
+          where: { id },
+          data: {
+            isPaidProcessed: true,
+          },
+        });
+      }
     }
   }
 

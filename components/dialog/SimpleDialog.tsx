@@ -65,15 +65,18 @@ export async function SimpleDialog({
               >
                 {data.orderStatus}
               </option>
-              {data.orderStatus !== "pending" && (
-                <option value={"pending"}>pending</option>
-              )}
-              {data.orderStatus !== "preparing" && (
-                <option value={"preparing"}>preparing</option>
-              )}
-              {data.orderStatus !== "ready" && (
-                <option value={"ready"}>ready</option>
-              )}
+              {data.orderStatus !== "pending" &&
+                data.orderStatus !== "completed" && (
+                  <option value={"pending"}>pending</option>
+                )}
+              {data.orderStatus !== "preparing" &&
+                data.orderStatus !== "completed" && (
+                  <option value={"preparing"}>preparing</option>
+                )}
+              {data.orderStatus !== "ready" &&
+                data.orderStatus !== "completed" && (
+                  <option value={"ready"}>ready</option>
+                )}
               {data.orderStatus !== "completed" && (
                 <option value={"completed"}>completed</option>
               )}
@@ -91,11 +94,7 @@ export async function SimpleDialog({
               >
                 {data.isPaid ? "paid" : "pending"}
               </option>
-              {data.isPaid ? (
-                <option value={"pending"}>pending</option>
-              ) : (
-                <option value={"paid"}>paid</option>
-              )}
+              {!data.isPaid && <option value={"paid"}>paid</option>}
             </select>
           </div>
           <DialogFooter>

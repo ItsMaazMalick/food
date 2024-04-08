@@ -9,6 +9,7 @@ import {
 import { decryptString, encryptString } from "@/utils/encryption";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { getReferralPoints } from "../points/points";
 
 type RegisterProps = {
   name: string;
@@ -140,28 +141,30 @@ export async function registerUser({
       where: { referralCode },
     });
 
-    if (oldUser && oldUser.points <= 45) {
+    const points = await getReferralPoints();
+
+    if (points) {
+      if (oldUser && oldUser.points <= 45) {
+        await prisma.user.update({
+          where: { referralCode: referralCode },
+          data: {
+            points: {
+              increment: points?.points,
+            },
+          },
+        });
+      }
+      // Increase points for the new user
       await prisma.user.update({
-        where: { referralCode: referralCode },
+        where: { email },
         data: {
           points: {
-            increment: 5, // Increment points by 5 for old user
+            increment: points?.points,
           },
         },
       });
     }
   }
-
-  // Increase points for the new user
-  await prisma.user.update({
-    where: { email },
-    data: {
-      points: {
-        increment: 5, // Increment points by 5 for new user
-      },
-    },
-  });
-
   return {
     status: 201,
     success: true,
@@ -194,7 +197,7 @@ export async function getUserByToken(token: string) {
     return null;
   }
   const decryptToken = decryptString(token);
-  const decodedToken = jwt.decode(decryptToken);
+  const decodedToken = jwt.decode(decryptToken || "");
   if (!decodedToken) {
     return null;
   }

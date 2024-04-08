@@ -13,6 +13,7 @@ export default async function OrderDetail({
   params: { id: string };
 }) {
   const order = await getOrderById(params.id);
+  console.log(order);
   if (!order) {
     redirect("/admin/dasboard/orders");
   }
@@ -71,6 +72,25 @@ export default async function OrderDetail({
         {/* ORDER PRODUCTS */}
         <div className="bg-white mt-4 rounded-md">
           <AdminDataTable data={order.orderProducts} index={5} />
+        </div>
+        <div className="w-full flex flex-col p-4 bg-white gap-4 border border-b-black rounded-md mt-2">
+          <h4 className="text-xl font-bold text-primary">Extras</h4>
+          <div className="flex justify-between items-center font-semibold border border-b-black">
+            <p>Name</p>
+            <p>Quantity</p>
+            <p>Price</p>
+          </div>
+          {order.orderProducts.map((product) => (
+            <div key={product.id} className="space-y-2">
+              {product.orderProductExtras.map((extra, index) => (
+                <div key={index} className="flex justify-between items-center">
+                  <p>{extra.extras.name}</p>
+                  <p>{extra.quantity}</p>
+                  <p>{extra.extras.price}</p>
+                </div>
+              ))}
+            </div>
+          ))}
         </div>
       </div>
     </div>

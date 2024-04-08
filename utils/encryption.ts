@@ -9,7 +9,14 @@ export function encryptString(string: string) {
 }
 
 export function decryptString(string: string) {
-  const decryptedBytes = CryptoJS.AES.decrypt(string, process.env.JWT_SECRET!);
-  const decrypted = decryptedBytes.toString(CryptoJS.enc.Utf8);
-  return decrypted;
+  try {
+    const decryptedBytes = CryptoJS.AES.decrypt(
+      string,
+      process.env.JWT_SECRET!
+    );
+    const decrypted = decryptedBytes.toString(CryptoJS.enc.Utf8);
+    return decrypted;
+  } catch (error) {
+    return null;
+  }
 }

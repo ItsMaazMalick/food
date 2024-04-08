@@ -1,12 +1,10 @@
 "use server";
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
-import prisma from "../../lib/db";
 import { decryptString } from "@/utils/encryption";
-import { NextRequest, NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 // * OK:  FIXED:  -> ADMIN SESSION
-export const getAdminSession = async () => {
+export const getSuperAdminSession = async () => {
   try {
     const cookieStore = cookies();
     const userCookie = cookieStore.get("auth-token")?.value;
@@ -60,10 +58,7 @@ export const getAdminSession = async () => {
       };
     }
 
-    const admin = await prisma.admin.findUnique({
-      where: { id },
-    });
-    if (!admin) {
+    if (tokenData.email !== process.env.SUPER_ADMIN_EMAIL) {
       return {
         status: 401,
         success: false,
@@ -73,10 +68,9 @@ export const getAdminSession = async () => {
     return {
       status: 200,
       success: true,
-      id: admin.id,
-      name: admin.name,
-      email: admin.email,
-      image: admin.image,
+      id: id,
+      name: process.env.SUPER_ADMIN_NAME,
+      email: process.env.SUPER_ADMIN_EMAIL,
     };
   } catch (error) {
     return {

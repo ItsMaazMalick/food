@@ -3,7 +3,7 @@ import { updateProduct } from "@/app/actions/product/product";
 import TextInput from "@/components/Inputs/TextInput";
 import FormSubmitButton from "@/components/button/FormSubmitButton";
 import { Form } from "@/components/ui/form";
-import { editProductSchema } from "@/lib/validations/productSchema";
+import { productSchema } from "@/lib/validations/productSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useState } from "react";
@@ -16,7 +16,7 @@ import SelectwithArray from "../Inputs/SelectwithArray";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
-const formSchema = editProductSchema;
+const formSchema = productSchema;
 
 type PageProps = {
   categories: any;
@@ -47,6 +47,7 @@ export default function EditProductForm({
       originalPrice: product.originalPrice,
       salePrice: product.salePrice,
       featured: product.featured,
+      isRecommended: product.isRecommended,
     },
   });
 
@@ -62,10 +63,10 @@ export default function EditProductForm({
     formData.append("originalPrice", String(values.originalPrice));
     formData.append("salePrice", String(values.salePrice));
     formData.append("featured", values.featured);
+    formData.append("recommended", values.isRecommended);
+    formData.append("isRecommended", values.isRecommended);
     formData.append("extras", selectedExtras.join(","));
-    // if (selectedExtras) {
-    //   formData.append("extras", selectedExtras.join(","));
-    // }
+
     const result = await updateProduct(formData);
     form.reset();
     form.reset();

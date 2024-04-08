@@ -29,9 +29,12 @@ import {
 } from "@/components/ui/table";
 import { ArrowUpDown } from "lucide-react";
 import {
+  AdminsHeader,
   CategoriesHeader,
   ExtrasHeader,
   ItemsHeader,
+  OrderExtrasHeader,
+  OrderProductsDetailHeader,
   OrdersHeader,
 } from "./headers/TableHeaders";
 
@@ -55,7 +58,13 @@ export default function AdminDataTable({ data, index }: PageProps) {
         ? ItemsHeader
         : index === 3
         ? ExtrasHeader
-        : OrdersHeader,
+        : index === 4
+        ? OrdersHeader
+        : index === 5
+        ? OrderProductsDetailHeader
+        : index === 6
+        ? OrderExtrasHeader
+        : AdminsHeader,
 
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
