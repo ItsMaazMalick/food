@@ -58,7 +58,7 @@ export async function superAdminLogin(formData: FormData) {
   );
   const encryptToken = encryptString(token);
   const encryptId = encryptString(id);
-  cookies().set("auth-token", encryptToken);
-  cookies().set("user", encryptId);
+  cookies().set("super-admin-token", encryptToken);
+  cookies().set("super-admin", encryptId);
   redirect("/super-admin/dashboard");
 }

@@ -7,8 +7,8 @@ import { cookies } from "next/headers";
 export const getSuperAdminSession = async () => {
   try {
     const cookieStore = cookies();
-    const userCookie = cookieStore.get("auth-token")?.value;
-    const userId = cookieStore.get("user")?.value;
+    const userCookie = cookieStore.get("super-admin-token")?.value;
+    const userId = cookieStore.get("super-admin")?.value;
     if (!userCookie || !userId) {
       return {
         status: 401,

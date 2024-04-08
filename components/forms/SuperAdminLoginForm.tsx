@@ -71,9 +71,6 @@ export default function SuperAdminLoginForm() {
               placeholder="******"
               control={form.control}
             />
-            <Link className="ml-auto inline-block text-sm underline" href="#">
-              Forgot your password?
-            </Link>
             <FormSubmitButton
               title="Login"
               loading={form.formState.isSubmitting || (success ? true : false)}
