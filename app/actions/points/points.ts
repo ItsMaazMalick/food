@@ -2,6 +2,7 @@
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { addNotification } from "../notifications/notifications";
 
 export async function addReferralPoints(points: number) {
   const oldPoints = await prisma.referralPoints.findFirst();
@@ -13,9 +14,20 @@ export async function addReferralPoints(points: number) {
       },
     });
     if (!result) {
-      return null;
+      return {
+        status: 400,
+        success: false,
+        message: "Error adding points",
+      };
     }
-    return result;
+    await addNotification(
+      `Referral points are now updated to ${points} points`
+    );
+    return {
+      status: 201,
+      success: true,
+      message: "Points updated successfully",
+    };
   }
 
   const result = await prisma.referralPoints.create({
@@ -24,9 +36,18 @@ export async function addReferralPoints(points: number) {
     },
   });
   if (!result) {
-    return null;
+    return {
+      status: 400,
+      success: false,
+      message: "Error adding points",
+    };
   }
-  return result;
+  await addNotification(`Referral points are now updated to ${points} points`);
+  return {
+    status: 201,
+    success: true,
+    message: "Points updated successfully",
+  };
 }
 
 export async function addOrderPoints(points: number) {
@@ -39,9 +60,18 @@ export async function addOrderPoints(points: number) {
       },
     });
     if (!result) {
-      return null;
+      return {
+        status: 400,
+        success: false,
+        message: "Error adding points",
+      };
     }
-    return result;
+    await addNotification(`Order points are now updated to ${points} points`);
+    return {
+      status: 201,
+      success: true,
+      message: "Points updated successfully",
+    };
   }
 
   const result = await prisma.orderPoints.create({
@@ -50,9 +80,18 @@ export async function addOrderPoints(points: number) {
     },
   });
   if (!result) {
-    return null;
+    return {
+      status: 400,
+      success: false,
+      message: "Error adding points",
+    };
   }
-  return result;
+  await addNotification(`Order points are now updated to ${points} points`);
+  return {
+    status: 201,
+    success: true,
+    message: "Points updated successfully",
+  };
 }
 
 export async function getReferralPoints() {

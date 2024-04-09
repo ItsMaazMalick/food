@@ -1,13 +1,11 @@
 import {
-  addNotification,
   deleteNotification,
   getAllNotifications,
 } from "@/app/actions/notifications/notifications";
 import FormSubmitButton from "@/components/button/FormSubmitButton";
 import AddNotificationForm from "@/components/forms/AddNotificationForm";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { revalidatePath } from "next/cache";
+import TopContainer from "@/components/header/TopContainer";
+import { Salad } from "lucide-react";
 import { redirect } from "next/navigation";
 
 export default async function Notifications() {
@@ -21,8 +19,12 @@ export default async function Notifications() {
 
   return (
     <div className="w-full">
+      <TopContainer
+        title="Notifications"
+        link={<Salad size={35} className="p-1 bg-white rounded-md" />}
+      />
       {/* ADD NOTIFICATION */}
-      <div className="mb-6">
+      <div className="my-6">
         <AddNotificationForm />
       </div>
       {/* ALL NOTIFICATIONS */}
