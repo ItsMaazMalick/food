@@ -75,4 +75,9 @@ export const adminNavLinks = [
     href: "/admin/dashboard/orders",
     icon: <BaggageClaim size={18} />,
   },
+  {
+    title: "Notifications",
+    href: "/super-admin/dashboard/notifications",
+    icon: <BaggageClaim size={18} />,
+  },
 ];
