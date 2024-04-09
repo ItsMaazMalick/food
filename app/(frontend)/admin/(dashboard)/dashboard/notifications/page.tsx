@@ -38,7 +38,7 @@ export default async function Notifications() {
               action={async () => {
                 "use server";
                 handleDelete(notification.id);
-                redirect("/super-admin/dashboard/notifications");
+                redirect("/admin/dashboard/notifications");
               }}
             >
               <FormSubmitButton size={"xs"} title="Delete" />
