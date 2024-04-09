@@ -47,7 +47,7 @@ export default async function SuperAdminDashboard() {
         link={<Salad size={35} className="p-1 bg-white rounded-md" />}
       />
       {/* CARDS */}
-      <div className="mt-4 w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="mt-4 w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <TopCard title="Admins" icon={<User2 />} length={admins.length} />
         <TopCard
           title="Categories"
