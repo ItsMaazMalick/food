@@ -71,6 +71,7 @@ export const getSuperAdminSession = async () => {
       id: id,
       name: process.env.SUPER_ADMIN_NAME,
       email: process.env.SUPER_ADMIN_EMAIL,
+      image: "/images/logo.jpeg",
     };
   } catch (error) {
     return {

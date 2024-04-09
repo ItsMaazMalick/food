@@ -31,14 +31,20 @@ export default function AdminLoginForm() {
     const formData = new FormData();
     formData.append("email", values.email);
     formData.append("password", values.password);
-    const result = await adminLogin(formData);
-    form.reset();
-    if (result && !result.success) {
+    try {
+      const result = await adminLogin(formData);
+      form.reset();
+      if (result && !result.success) {
+        setSuccess("");
+        setError(result.message);
+      } else {
+        setError("");
+        setSuccess("Redirecting to dashboard...");
+      }
+    } catch (error) {
+      form.reset();
       setSuccess("");
-      setError(result.message);
-    } else {
-      setError("");
-      setSuccess("Redirecting to dashboard...");
+      setError("Internal server error");
     }
   }
   return (

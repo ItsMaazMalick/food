@@ -1,7 +1,6 @@
 import { Menu, Salad } from "lucide-react";
 import DropdownComponent from "../dropdown/DropdownComponent";
 import { DropdownMenuItem, DropdownMenuSeparator } from "../ui/dropdown-menu";
-import { navLinks } from "@/constants/navlinks";
 import Link from "next/link";
 import AdminLogoutForm from "../forms/AdminLogoutForm";
 import MobileMenuLinks from "../sidebar/MobileMenuLinks";
@@ -22,13 +21,13 @@ export default function TopContainer({
           <MobileMenuLinks />
           <DropdownMenuItem>
             <div className="w-full flex flex-col gap-2">
-              <div className="w-full">
+              {/* <div className="w-full">
                 <Link href={"admin/dashboard/edit-profile"}>
                   <Button variant={"outline"} className="w-full">
                     Edit Profile
                   </Button>
                 </Link>
-              </div>
+              </div> */}
               <div className="w-full">
                 <AdminLogoutForm />
               </div>

@@ -2,12 +2,12 @@ import { cookies } from "next/headers";
 import FormSubmitButton from "../button/FormSubmitButton";
 import { redirect } from "next/navigation";
 
-export default function AdminLogoutForm() {
+export default function SuperAdminLogoutForm() {
   const handleLogout = async () => {
     "use server";
-    cookies()?.set("auth-token", "", { expires: new Date(0) });
-    cookies()?.set("user", "", { expires: new Date(0) });
-    redirect("/admin/auth/login");
+    cookies()?.set("super-admin-token", "", { expires: new Date(0) });
+    cookies()?.set("super-admin", "", { expires: new Date(0) });
+    redirect("/super-admin/auth/login");
   };
   return (
     <form action={handleLogout}>

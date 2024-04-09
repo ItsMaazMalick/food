@@ -10,11 +10,6 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const _cookies = cookies();
-  // setTimeout(() => {
-  //   revalidatePath("/");
-  // }, 300);
-
   const session = await getAdminSession();
   if (!session?.success) {
     return redirect("/admin/auth/login");
@@ -22,7 +17,7 @@ export default async function DashboardLayout({
   return (
     <div className="w-full min-h-screen flex bg-gray-100">
       <div className="hidden sm:block">
-        <Sidebar />
+        <Sidebar source={"admin"} />
       </div>
       <div className="p-4 w-full">{children}</div>
     </div>

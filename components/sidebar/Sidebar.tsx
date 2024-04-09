@@ -5,16 +5,26 @@ import AdminLogoutForm from "../forms/AdminLogoutForm";
 import SidebarLinks from "./SidebarLinks";
 import { Button } from "../ui/button";
 import { redirect } from "next/navigation";
+import { getSuperAdminSession } from "@/app/actions/superAdminSession";
+import SuperAdminLogoutForm from "../forms/SuperAdminLogoutForm";
 
-export default async function Sidebar() {
-  const data = await getAdminSession();
-  if (!data.success) {
-    return redirect("/admin/auth/login");
+export default async function Sidebar({ source }: { source: string }) {
+  let data;
+  if (source === "admin") {
+    data = await getAdminSession();
+  } else if (source === "super-admin") {
+    data = await getSuperAdminSession();
   }
+
+  if (!data?.success) {
+    redirect(`${source === "admin" ? "/admin" : "/super-admin"}/auth/login`);
+  }
+
   const { id, name, image } = data;
+
   const imgSrc = image !== "null" ? image : "/images/logo.jpeg";
   return (
-    <div className="bg-white sm:w-[150px] md:w-[200px] min-h-screen z-50 sticky top-0 shadow-xl">
+    <div className="bg-white sm:w-[150px] md:w-[200px] min-h-screen h-screen overflow-y-auto z-50 sticky top-0 shadow-xl">
       <div className="w-full h-screen flex flex-col justify-between">
         {/* LOGO */}
         <div className="w-full py-4 px-2 flex gap-2 justify-center items-center">
@@ -41,16 +51,18 @@ export default async function Sidebar() {
             <span className="text-xs text-green-600 font-bold">online</span>
           </div>
         </div>
-        <SidebarLinks />
-        <div className="px-2">
-          <Link href={`/admin/dashboard/edit-profile/${id}`}>
-            <Button variant={"outline"} className="w-full">
-              Edit Profile
-            </Button>
-          </Link>
-        </div>
+        <SidebarLinks source={source} />
+        {source === "admin" && (
+          <div className="px-2">
+            <Link href={`/admin/dashboard/edit-profile/${id}`}>
+              <Button variant={"outline"} className="w-full">
+                Edit Profile
+              </Button>
+            </Link>
+          </div>
+        )}
         <div className="p-2">
-          <AdminLogoutForm />
+          {source === "admin" ? <AdminLogoutForm /> : <SuperAdminLogoutForm />}
         </div>
       </div>
     </div>
