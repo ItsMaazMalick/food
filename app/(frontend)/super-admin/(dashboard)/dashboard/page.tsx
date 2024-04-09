@@ -17,6 +17,7 @@ import {
   Menu,
   Salad,
   Search,
+  User2,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -47,6 +48,7 @@ export default async function SuperAdminDashboard() {
       />
       {/* CARDS */}
       <div className="mt-4 w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <TopCard title="Admins" icon={<User2 />} length={admins.length} />
         <TopCard
           title="Categories"
           icon={<Boxes />}
