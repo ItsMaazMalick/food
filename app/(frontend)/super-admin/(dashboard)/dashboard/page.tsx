@@ -4,19 +4,15 @@ import { getAllOrders } from "@/app/actions/orders/orders";
 import { getAllProducts } from "@/app/actions/product/product";
 import TopCard from "@/components/cards/TopCard";
 import PieChart from "@/components/charts/PieChart";
-import Example from "@/components/charts/PieChart";
 import TopContainer from "@/components/header/TopContainer";
 import AdminDataTable from "@/components/tables/AdminDataTable";
-import { Input } from "@/components/ui/input";
 import prisma from "@/lib/db";
 import {
   Boxes,
   DollarSign,
   LayoutList,
   ListChecks,
-  Menu,
   Salad,
-  Search,
   User2,
 } from "lucide-react";
 import Image from "next/image";
@@ -27,7 +23,7 @@ export default async function SuperAdminDashboard() {
   const products = await getAllProducts();
   const extras = await getAllExtras();
   const orders = await getAllOrders();
-  const pendingOrders = orders.filter(
+  const pendingOrders: any = orders.filter(
     (order) => order.orderStatus === "pending"
   );
   const completedOrders = orders.filter(

@@ -32,7 +32,9 @@ export async function addNotification(text: string) {
 }
 
 export async function getAllNotifications() {
-  const notifications = await prisma.notification.findMany();
+  const notifications = await prisma.notification.findMany({
+    orderBy: { createdAt: "desc" },
+  });
   return notifications;
 }
 

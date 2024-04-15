@@ -19,7 +19,6 @@ export const getPublicToken = () => {
 export async function verifyPublicToken() {
   const headerList = headers();
   const token = headerList.get("Authorization")?.split(" ")[1];
-
   if (!token) {
     return null;
   }
