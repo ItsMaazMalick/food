@@ -18,6 +18,36 @@ type RegisterProps = {
   referralCode?: string;
 };
 
+export const loginUserResponse = ({ user }: any) => {
+  const tokenData = {
+    id: user.id,
+    email: user.email,
+  };
+
+  //ASSIGN TOKEN
+  const token = jwt.sign(
+    {
+      tokenData,
+    },
+    process.env.JWT_SECRET!,
+    { expiresIn: "1d" }
+  );
+  const encryptToken = encryptString(token);
+  return {
+    status: 200,
+    success: true,
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    image: user.image,
+    referralCode: user.referralCode,
+    points: user.points,
+    favorites: user.favorites,
+    // errors: {},
+    token: encryptToken,
+  };
+};
+
 // * OK:  FIXED:  -> LOGIN USER
 export async function loginUser({
   email,
@@ -69,34 +99,7 @@ export async function loginUser({
     };
   }
 
-  //TOKEN DATA
-  const tokenData = {
-    id: user.id,
-    email: user.email,
-  };
-
-  //ASSIGN TOKEN
-  const token = jwt.sign(
-    {
-      tokenData,
-    },
-    process.env.JWT_SECRET!,
-    { expiresIn: "1d" }
-  );
-  const encryptToken = encryptString(token);
-  return {
-    status: 200,
-    success: true,
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    image: user.image,
-    referralCode: user.referralCode,
-    points: user.points,
-    favorites: user.favorites,
-    // errors: {},
-    token: encryptToken,
-  };
+  return loginUserResponse({ user });
 }
 
 // * OK:  FIXED:  -> REGISTER USER

@@ -1,10 +1,10 @@
-import { loginUser } from "@/app/actions/user/auth";
+import { loginUser, loginUserResponse } from "@/app/actions/user/auth";
+import { codeGenerator } from "@/lib/codeGenerator";
 import prisma from "@/lib/db";
-import { decryptString, encryptString } from "@/utils/encryption";
-import { NextResponse } from "next/server";
+import { encryptString } from "@/utils/encryption";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { codeGenerator } from "@/lib/codeGenerator";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
@@ -46,33 +46,7 @@ export async function POST(request: Request) {
             linkAccount: "google",
           },
         });
-        const tokenData = {
-          id: user.id,
-          email: user.email,
-        };
-
-        //ASSIGN TOKEN
-        const token = jwt.sign(
-          {
-            tokenData,
-          },
-          process.env.JWT_SECRET!,
-          { expiresIn: "1d" }
-        );
-        const encryptToken = encryptString(token);
-        return NextResponse.json({
-          status: 200,
-          success: true,
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-          referralCode: user.referralCode,
-          points: user.points,
-          favorites: user.favorites,
-          // errors: {},
-          token: encryptToken,
-        });
+        return NextResponse.json(loginUserResponse({ user }));
       }
 
       // There is an existing user exist! but not link with google
@@ -94,33 +68,7 @@ export async function POST(request: Request) {
             password: hashPassword,
           },
         });
-        const tokenData = {
-          id: user.id,
-          email: user.email,
-        };
-
-        //ASSIGN TOKEN
-        const token = jwt.sign(
-          {
-            tokenData,
-          },
-          process.env.JWT_SECRET!,
-          { expiresIn: "1d" }
-        );
-        const encryptToken = encryptString(token);
-        return NextResponse.json({
-          status: 200,
-          success: true,
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image,
-          referralCode: user.referralCode,
-          points: user.points,
-          favorites: user.favorites,
-          // errors: {},
-          token: encryptToken,
-        });
+        return NextResponse.json(loginUserResponse({ user }));
       }
     }
   } catch (error) {
