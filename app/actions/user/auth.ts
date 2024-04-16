@@ -51,6 +51,14 @@ export async function loginUser({
       message: "Invalid credentials",
     };
   }
+  if (user.linkAccount === "google") {
+    return {
+      status: 401,
+      success: false,
+      // errors: {},
+      message: "Invalid credentials",
+    };
+  }
   const isPassword = await bcrypt.compare(password, user.password);
   if (!isPassword) {
     return {
@@ -82,6 +90,7 @@ export async function loginUser({
     id: user.id,
     name: user.name,
     email: user.email,
+    image: user.image,
     referralCode: user.referralCode,
     points: user.points,
     favorites: user.favorites,

@@ -24,6 +24,13 @@ export async function POST(request: Request) {
       return NextResponse.json(res);
     }
     if (linkAccount === "google") {
+      if (!name || !password) {
+        return NextResponse.json({
+          status: 400,
+          success: false,
+          message: "Invalid data provided",
+        });
+      }
       const existingUser = await prisma.user.findUnique({
         where: { email },
       });
@@ -59,6 +66,7 @@ export async function POST(request: Request) {
           id: user.id,
           name: user.name,
           email: user.email,
+          image: user.image,
           referralCode: user.referralCode,
           points: user.points,
           favorites: user.favorites,
@@ -107,6 +115,7 @@ export async function POST(request: Request) {
           id: user.id,
           name: user.name,
           email: user.email,
+          image: user.image,
           referralCode: user.referralCode,
           points: user.points,
           favorites: user.favorites,
