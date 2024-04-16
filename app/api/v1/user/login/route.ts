@@ -94,7 +94,6 @@ export async function POST(request: Request) {
             password: hashPassword,
           },
         });
-        //TOKEN DATA
         const tokenData = {
           id: user.id,
           email: user.email,
@@ -120,7 +119,7 @@ export async function POST(request: Request) {
           points: user.points,
           favorites: user.favorites,
           // errors: {},
-          token: user,
+          token: encryptToken,
         });
       }
     }
