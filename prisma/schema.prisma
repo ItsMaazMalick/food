@@ -63,18 +63,21 @@ model Extras {
 }
 
 model User {
-  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
   name         String
-  email        String    @unique
+  email        String      @unique
+  image        String?
   password     String
-  referralCode String    @unique
-  points       Int       @default(0)
-  orderPoints  Int       @default(0)
-  favorites    String[]  @db.ObjectId
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  referralCode String      @unique
+  points       Int         @default(0)
+  orderPoints  Int         @default(0)
+  linkAccount  LinkAccount @default(credentials)
+  favorites    String[]    @db.ObjectId
   Order        Order[]
   Product      Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Order {
@@ -164,4 +167,9 @@ enum OrderType {
   pickup
   dinning
   delivery
+}
+
+enum LinkAccount {
+  credentials
+  google
 }
