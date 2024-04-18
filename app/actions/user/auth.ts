@@ -17,7 +17,7 @@ type RegisterProps = {
   password: string;
   referralCode?: string;
 };
-
+// * Utility function for login response
 export const loginUserResponse = ({ user }: any) => {
   const tokenData = {
     id: user.id,
@@ -40,8 +40,9 @@ export const loginUserResponse = ({ user }: any) => {
     name: user.name,
     email: user.email,
     image: user.image,
-    referralCode: user.referralCode,
     points: user.points,
+    orderPoints: user.orderPoints,
+    referralCode: user.referralCode,
     favorites: user.favorites,
     // errors: {},
     token: encryptToken,
